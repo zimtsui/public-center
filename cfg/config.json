@@ -1,0 +1,5 @@
+{
+    "PORT": 12001,
+    "INTERVAL_OF_CLEANING": 60000,
+    "TTL": 120000
+}

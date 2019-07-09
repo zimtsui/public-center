@@ -1,0 +1,48 @@
+{
+  "name": "quote-center",
+  "version": "0.0.1",
+  "description": "",
+  "main": "./dist/index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel --delete-dir-on-start --copy-files -s -d ./dist ./src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zimtsui/quote-center.git"
+  },
+  "author": "Zim",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zimtsui/quote-center/issues"
+  },
+  "homepage": "https://github.com/zimtsui/quote-center#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.0",
+    "@babel/plugin-proposal-class-properties": "^7.5.0",
+    "@babel/plugin-proposal-function-bind": "^7.2.0",
+    "@babel/plugin-proposal-logical-assignment-operators": "^7.2.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.2.0",
+    "@babel/plugin-proposal-partial-application": "^7.4.4",
+    "@babel/plugin-proposal-pipeline-operator": "^7.5.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.5.0",
+    "@babel/preset-env": "^7.5.2",
+    "babel-eslint": "^11.0.0-beta.0",
+    "babel-plugin-root-import": "^6.2.0",
+    "babel-plugin-source-map-support": "^2.0.1",
+    "eslint": "^6.0.1",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-import": "^2.18.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.5.2",
+    "lodash": "^4.17.11",
+    "pollerloop": "git+https://github.com/zimtsui/pollerloop.git",
+    "queue": "git+https://github.com/zimtsui/queue.git",
+    "source-map-support": "^0.5.12"
+  }
+}
