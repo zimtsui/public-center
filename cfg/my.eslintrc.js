@@ -19,7 +19,6 @@ module.exports = {
         'no-shadow': 'off',
         'max-len': 'warn',
         'no-unused-expressions': 'off',
-        eqeqeq: 'off',
         'no-param-reassign': 'off',
     },
 };
