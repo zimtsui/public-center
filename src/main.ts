@@ -11,14 +11,14 @@ process.on('uncaughtException', (err) => {
 
 const quoteCenter = new QuoteCenter();
 
-quoteCenter.start(err => {
-    console.log(err);
-}).catch(err => {
-    console.log(err);
-    process.exit(-1);
-}).then(() => {
-    process.once('SIGINT', () => {
-        process.once('SIGINT', () => process.exit(-1));
-        quoteCenter.stop();
+quoteCenter
+    .start()
+    .catch(err => {
+        console.log(err);
+        process.exit(-1);
+    }).then(() => {
+        process.once('SIGINT', () => {
+            process.once('SIGINT', () => process.exit(-1));
+            quoteCenter.stop();
+        });
     });
-});

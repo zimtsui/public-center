@@ -5,9 +5,9 @@
     "main": "./dist/index.js",
     "private": true,
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "tsc -b ./test/ && ava",
         "build": "tsc -b",
-        "start": "node ./dist/main"
+        "start": "node -r source-map-support ./dist/main"
     },
     "repository": {
         "type": "git",
@@ -20,6 +20,12 @@
     },
     "homepage": "https://github.com/zimtsui/quote-center#readme",
     "devDependencies": {
+        "@types/chai": "^4.1.7",
+        "@types/chai-as-promised": "^7.1.0",
+        "ava": "^2.2.0",
+        "axios": "^0.19.0",
+        "chai": "^4.2.0",
+        "chai-as-promised": "^7.1.1",
         "typescript": "^3.5.3"
     },
     "dependencies": {
@@ -31,9 +37,16 @@
         "@types/ws": "^6.0.1",
         "bluebird": "^3.5.5",
         "fs-extra": "^8.1.0",
+        "koa": "^2.7.0",
+        "koa-router": "^7.4.0",
         "lodash": "^4.17.13",
         "pollerloop": "git+https://github.com/zimtsui/pollerloop.git",
         "queue": "git+https://github.com/zimtsui/queue.git",
-        "source-map-support": "^0.5.12"
+        "source-map-support": "^0.5.12",
+        "ws": "^7.1.0"
+    },
+    "ava": {
+        "failWithoutAssertions": false,
+        "verbose": true
     }
 }

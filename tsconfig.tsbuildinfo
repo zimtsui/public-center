@@ -430,8 +430,8 @@
         "signature": "7afda1e28689df9319130fd07f59c496061f636bee4bead58d6993917682933c"
       },
       "/home/zim/bithub/quote-center/node_modules/pollerloop/dist/index.d.ts": {
-        "version": "77f595aff60d0952f60a13738e899d2c04fcc57babfc913357750ebf3830b9cc",
-        "signature": "77f595aff60d0952f60a13738e899d2c04fcc57babfc913357750ebf3830b9cc"
+        "version": "ba9fff6eb49e74425a1ab438d4a73c74ce7fc3ae9a775e0f8db0246cdaabef9a",
+        "signature": "ba9fff6eb49e74425a1ab438d4a73c74ce7fc3ae9a775e0f8db0246cdaabef9a"
       },
       "/home/zim/bithub/quote-center/node_modules/queue/dist/index.d.ts": {
         "version": "08c2d0ddc692aac55667c7955a27ce98671c4f881faed785cd07da0cfaa37cde",
@@ -442,16 +442,32 @@
         "signature": "49bb5e4a3b0c2ac8a6498f695fea5fc384d446cab4b86efb0761d74026a3dcf4"
       },
       "/home/zim/bithub/quote-center/src/market.ts": {
-        "version": "b183fc2af28d731a3f5bce907a86dbae944afeb3aa9c70536ae544d4ade04b0d",
-        "signature": "1758c0f566681b3139f9622b7afe7bcda8798ac715b3efb477a694bc868f2fc1"
+        "version": "d05749f86fd76cb197537645499d8389154aefdb5cdf0ee7d60342c1e07b4c8a",
+        "signature": "1bea6dd2e151f17b9cd0748612cf786bf485e246402c6f1bcfc46d3dfdbbe477"
       },
       "/home/zim/bithub/quote-center/src/index.ts": {
-        "version": "2b9fcdd9e2e26219bc95e5f7bb6ed841fb673c429cb88e7a747ac813dc6caf57",
-        "signature": "5b7ed37e64a1246b12ed26802f3872efeee09a00677f9716cbf79a9dc942169a"
+        "version": "6ae15bf207d4d05a0286d05563d0478ea180477294b14e0061ab0805a0b74ff2",
+        "signature": "f9a7ccf810241afd3ac8f4870ba27d049a5f52c9675e0b90c1a866456dabecc2"
       },
       "/home/zim/bithub/quote-center/src/main.ts": {
-        "version": "f10d8d51555bed5fb4ecaf3c8bc61738031d64a462b071c6354e15b5aae4569b",
+        "version": "f787d86380ee56738a913941055cce2da4624e52b85a24453410059cff5dfc65",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      "/home/zim/bithub/quote-center/node_modules/@types/chai/index.d.ts": {
+        "version": "c465afa89ac28f74167a2ee7c3c6eb8dd1245c2b3bdaa4704d58d35b932de4b7",
+        "signature": "c465afa89ac28f74167a2ee7c3c6eb8dd1245c2b3bdaa4704d58d35b932de4b7"
+      },
+      "/home/zim/bithub/quote-center/node_modules/@types/chai-as-promised/index.d.ts": {
+        "version": "88e89bb32640978ab8652234e0ecf50a3e7b999a34f8e674a6d4ce37a9c0be07",
+        "signature": "88e89bb32640978ab8652234e0ecf50a3e7b999a34f8e674a6d4ce37a9c0be07"
+      },
+      "/home/zim/bithub/quote-center/node_modules/@types/minimatch/index.d.ts": {
+        "version": "1d1e6bd176eee5970968423d7e215bfd66828b6db8d54d17afec05a831322633",
+        "signature": "1d1e6bd176eee5970968423d7e215bfd66828b6db8d54d17afec05a831322633"
+      },
+      "/home/zim/bithub/quote-center/node_modules/@types/glob/index.d.ts": {
+        "version": "d852d6282c8dc8156d26d6bda83ab4bde51fee05ba2fe0ecdc165ddda009d3ee",
+        "signature": "d852d6282c8dc8156d26d6bda83ab4bde51fee05ba2fe0ecdc165ddda009d3ee"
       }
     },
     "options": {
@@ -462,7 +478,6 @@
       ],
       "sourceMap": true,
       "strict": true,
-      "noUnusedLocals": true,
       "noImplicitReturns": true,
       "noFallthroughCasesInSwitch": true,
       "esModuleInterop": true,
@@ -471,6 +486,7 @@
       "declaration": true,
       "rootDir": "/home/zim/bithub/quote-center/src/",
       "outDir": "/home/zim/bithub/quote-center/dist/",
+      "noUnusedLocals": true,
       "configFilePath": "/home/zim/bithub/quote-center/tsconfig.json"
     },
     "referencedMap": {
@@ -1215,7 +1231,9 @@
         "/home/zim/bithub/quote-center/node_modules/@types/fs-extra/index.d.ts",
         "/home/zim/bithub/quote-center/node_modules/@types/ws/index.d.ts",
         "/home/zim/bithub/quote-center/node_modules/@types/node/http.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/path.d.ts",
         "/home/zim/bithub/quote-center/node_modules/@types/lodash/ts3.1/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/assert.d.ts",
         "/home/zim/bithub/quote-center/node_modules/@types/koa/index.d.ts",
         "/home/zim/bithub/quote-center/node_modules/@types/koa-router/index.d.ts",
         "/home/zim/bithub/quote-center/src/market.ts",
@@ -1225,6 +1243,26 @@
       ],
       "/home/zim/bithub/quote-center/src/main.ts": [
         "/home/zim/bithub/quote-center/src/index.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/@types/chai/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/@types/chai-as-promised/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/chai/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/@types/minimatch/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/@types/glob/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/events.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/minimatch/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/index.d.ts",
         "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
         "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
       ]
@@ -1955,6 +1993,26 @@
       ],
       "/home/zim/bithub/quote-center/src/market.ts": [
         "/home/zim/bithub/quote-center/src/interfaces.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/@types/chai/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/@types/chai-as-promised/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/chai/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/@types/minimatch/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/@types/glob/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/events.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/minimatch/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
@@ -2065,12 +2123,16 @@
       "/home/zim/bithub/quote-center/node_modules/@types/koa-compose/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/koa/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/koa-router/index.d.ts",
+      "/home/zim/bithub/quote-center/node_modules/pollerloop/dist/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/queue/dist/index.d.ts",
       "/home/zim/bithub/quote-center/src/interfaces.ts",
-      "/home/zim/bithub/quote-center/node_modules/pollerloop/dist/index.d.ts",
       "/home/zim/bithub/quote-center/src/market.ts",
-      "/home/zim/bithub/quote-center/src/index.ts",
-      "/home/zim/bithub/quote-center/src/main.ts"
+      "/home/zim/bithub/quote-center/src/main.ts",
+      "/home/zim/bithub/quote-center/node_modules/@types/chai/index.d.ts",
+      "/home/zim/bithub/quote-center/node_modules/@types/chai-as-promised/index.d.ts",
+      "/home/zim/bithub/quote-center/node_modules/@types/minimatch/index.d.ts",
+      "/home/zim/bithub/quote-center/node_modules/@types/glob/index.d.ts",
+      "/home/zim/bithub/quote-center/src/index.ts"
     ]
   },
   "version": "3.5.3"

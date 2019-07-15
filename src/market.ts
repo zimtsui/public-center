@@ -12,7 +12,7 @@ class Market {
     private orderbook: Orderbook = { asks: [], bids: [], };
     private cleaner: Pollerloop;
     constructor(
-        private destructing: (err?: Error) => void = () => { },
+        private destructing: () => void = () => { },
         userConfig?: Config
     ) {
         this.config = { ...this.defaultConfig, ...userConfig };
@@ -31,6 +31,9 @@ class Market {
             stopping();
         }
         this.cleaner = new Pollerloop(polling);
+        /**
+         * 不需要 cb，因为 cleaner 根本不会自析构。
+         */
         this.cleaner.start();
     }
 

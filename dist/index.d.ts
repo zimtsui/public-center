@@ -1,13 +1,12 @@
 declare class QuoteCenter {
-    private stopping;
+    private state;
     private config;
     private httpServer;
-    private wsServer;
-    private koa;
-    private router;
+    private upServer;
+    private downServer;
     private markets;
     constructor();
-    start(stopping?: (err?: Error) => void): Promise<void>;
-    stop(err?: Error): Promise<void>;
+    start(): Promise<void>;
+    stop(): void;
 }
 export default QuoteCenter;

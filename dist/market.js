@@ -22,7 +22,7 @@ class Market {
         this.trades = new queue_1.default();
         this.orderbook = { asks: [], bids: [], };
         this.config = Object.assign({}, this.defaultConfig, userConfig);
-        this.cleaner = new pollerloop_1.default((stopping, isRunning, delay) => __awaiter(this, void 0, void 0, function* () {
+        const polling = (stopping, isRunning, delay) => __awaiter(this, void 0, void 0, function* () {
             for (; isRunning();) {
                 const timer = delay(this.config.INTERVAL_OF_CLEANING);
                 const nowTimeStamp = Date.now();
@@ -31,23 +31,24 @@ class Market {
                 yield timer;
             }
             stopping();
-            return isRunning();
-        }));
+        });
+        this.cleaner = new pollerloop_1.default(polling);
+        /**
+         * 不需要 cb，因为 cleaner 根本不会自析构。
+         */
         this.cleaner.start();
     }
     destructor() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.destructing();
-            yield this.cleaner.stop();
-        });
+        this.destructing();
+        this.cleaner.stop();
     }
     getTrades(from = new Date(0)) {
         return this.trades.takeRearWhile(trade => trade.time >= from);
     }
-    getOrderbook(depth) {
+    getOrderbook(depth = Infinity) {
         return {
-            bids: lodash_1.default.take(this.orderbook.bids, depth || Infinity),
-            asks: lodash_1.default.take(this.orderbook.asks, depth || Infinity),
+            bids: lodash_1.default.take(this.orderbook.bids, depth),
+            asks: lodash_1.default.take(this.orderbook.asks, depth),
         };
     }
     updateTrades(newTrades) {

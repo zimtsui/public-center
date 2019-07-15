@@ -13,9 +13,9 @@ process.on('uncaughtException', (err) => {
     process.exit(-1);
 });
 const quoteCenter = new _1.default();
-quoteCenter.start(err => {
-    console.log(err);
-}).catch(err => {
+quoteCenter
+    .start()
+    .catch(err => {
     console.log(err);
     process.exit(-1);
 }).then(() => {

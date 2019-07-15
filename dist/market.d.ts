@@ -6,8 +6,8 @@ declare class Market {
     private trades;
     private orderbook;
     private cleaner;
-    constructor(destructing?: (err?: Error) => void, userConfig?: Config);
-    destructor(): Promise<void>;
+    constructor(destructing?: () => void, userConfig?: Config);
+    destructor(): void;
     getTrades(from?: Date): Trade[];
     getOrderbook(depth?: number): Orderbook;
     updateTrades(newTrades: Trade[]): void;

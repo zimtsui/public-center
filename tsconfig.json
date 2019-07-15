@@ -5,6 +5,7 @@
         "declaration": true,
         "rootDir": "./src/",
         "outDir": "./dist/",
+        "noUnusedLocals": true,
     },
     "include": [
         "./src/**/*"

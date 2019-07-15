@@ -15,30 +15,36 @@ const bluebird_1 = __importDefault(require("bluebird"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const ws_1 = __importDefault(require("ws"));
 const http_1 = __importDefault(require("http"));
+const path_1 = __importDefault(require("path"));
 const lodash_1 = __importDefault(require("lodash"));
+const assert_1 = __importDefault(require("assert"));
 const koa_1 = __importDefault(require("koa"));
 const koa_router_1 = __importDefault(require("koa-router"));
 const market_1 = __importDefault(require("./market"));
+var States;
+(function (States) {
+    States[States["CONSTRUCTED"] = 0] = "CONSTRUCTED";
+    States[States["STARTED"] = 1] = "STARTED";
+    States[States["STOPPING"] = 2] = "STOPPING";
+})(States || (States = {}));
 class QuoteCenter {
     constructor() {
-        this.stopping = undefined;
-        this.config = fs_extra_1.default.readJsonSync('../cfg/config.json');
+        this.state = States.CONSTRUCTED;
+        // private stopping: (() => void) | undefined = undefined;
+        this.config = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
         this.httpServer = http_1.default.createServer();
-        this.wsServer = new ws_1.default.Server({ server: this.httpServer });
-        this.koa = new koa_1.default();
-        this.router = new koa_router_1.default();
+        this.upServer = new ws_1.default.Server({ server: this.httpServer });
+        this.downServer = new koa_1.default();
         this.markets = new Map();
         this.httpServer.timeout = 0;
         this.httpServer.keepAliveTimeout = 0;
-        this.wsServer.on('connection', (quoteAgent) => {
+        this.upServer.on('connection', (quoteAgent) => {
             quoteAgent.on('message', (message) => {
                 const data = JSON.parse(message);
                 const marketName = lodash_1.default.toLower(`${data.exchange}.${data.pair[0]}.${data.pair[1]}`);
                 if (!this.markets.has(marketName)) {
-                    this.markets.set(marketName, new market_1.default(err => {
+                    this.markets.set(marketName, new market_1.default(() => {
                         this.markets.delete(marketName);
-                        if (err)
-                            this.stop(err);
                     }));
                 }
                 const market = this.markets.get(marketName);
@@ -48,11 +54,12 @@ class QuoteCenter {
                     market.updateOrderbook(data.orderbook);
             });
         });
-        this.koa.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
+        this.downServer.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
             ctx.marketName = lodash_1.default.toLower(`${ctx.query.exchange}.${ctx.query.pair}`);
             yield next();
         }));
-        this.router.get('/trades', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
+        const router = new koa_router_1.default();
+        router.get('/trades', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
             const market = this.markets.get(ctx.marketName);
             if (market) {
                 ctx.status = 200;
@@ -63,7 +70,7 @@ class QuoteCenter {
             }
             yield next();
         }));
-        this.router.get('/orderbook', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
+        router.get('/orderbook', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
             const market = this.markets.get(ctx.marketName);
             if (market) {
                 ctx.status = 200;
@@ -74,22 +81,21 @@ class QuoteCenter {
             }
             yield next();
         }));
-        this.koa.use(this.router.routes());
-        this.httpServer.on('request', this.koa.callback());
+        this.downServer.use(router.routes());
     }
-    start(stopping = () => { }) {
-        this.stopping = stopping;
-        this.httpServer.listen(this.config.PORT);
-        console.log('listening');
-        return Promise.resolve();
+    start( /* stopping = () => { } */) {
+        // this.stopping = stopping;
+        // console.log('listening');
+        this.state = States.STARTED;
+        return new bluebird_1.default(resolve => void this.httpServer.listen(this.config.PORT, resolve));
     }
-    stop(err) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.log('stopping');
-            this.stopping(err);
-            yield bluebird_1.default.promisify(this.httpServer.close.bind(this.httpServer))();
-            yield bluebird_1.default.all([...this.markets.values()].map(market => market.destructor()));
-        });
+    stop() {
+        assert_1.default(this.state === States.STARTED);
+        this.state = States.STOPPING;
+        // console.log('stopping');
+        // this.stopping!();
+        this.httpServer.close();
+        this.markets.forEach(market => market.destructor());
     }
 }
 exports.default = QuoteCenter;
