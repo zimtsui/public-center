@@ -18,6 +18,7 @@ chai_1.default.use(chai_as_promised_1.default);
 const { assert } = chai_1.default;
 const chance_1 = __importDefault(require("chance"));
 const chance = new chance_1.default();
+const axios_1 = __importDefault(require("axios"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const path_1 = __importDefault(require("path"));
 const bluebird_1 = __importDefault(require("bluebird"));
@@ -26,8 +27,9 @@ const ws_1 = __importDefault(require("ws"));
 const interfaces_1 = require("../../dist/interfaces");
 const __1 = __importDefault(require("../.."));
 const config = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../../cfg/config.json'));
-const tradeNum = 0;
-const OrderNum = 1;
+const tradeNum = 2;
+const OrderNum = 2;
+const likelihood = 90;
 function randomOrder() {
     return {
         action: chance.pickone([interfaces_1.Action.BID, interfaces_1.Action.ASK]),
@@ -67,9 +69,9 @@ function randomMessage() {
             exchange: 'bitmex',
             pair: ['btc', 'usd'],
         };
-        if (chance.bool())
+        if (chance.bool({ likelihood }))
             message.orderbook = randomOrderbook();
-        if (chance.bool())
+        if (chance.bool({ likelihood }))
             message.trades = yield randomTrades();
         return message;
     });
@@ -109,10 +111,9 @@ ava_1.default.serial('connection', (t) => __awaiter(this, void 0, void 0, functi
     t.log(5);
     yield bluebird_1.default.delay(500);
 }));
-ava_1.default.serial.only('upload', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default.serial('upload', (t) => __awaiter(this, void 0, void 0, function* () {
     global.t = t;
     const quoteCenter = new __1.default();
-    t.log(1);
     yield quoteCenter.start();
     const uploader = new ws_1.default(`ws://localhost:${config.PORT}`);
     uploader.on('error', err => {
@@ -125,6 +126,68 @@ ava_1.default.serial.only('upload', (t) => __awaiter(this, void 0, void 0, funct
     yield bluebird_1.default.delay(1000);
     uploader.close();
     yield new Promise(resolve => void uploader.on('close', resolve));
+    quoteCenter.stop();
+}));
+ava_1.default.serial('download', (t) => __awaiter(this, void 0, void 0, function* () {
+    global.t = t;
+    const quoteCenter = new __1.default();
+    yield quoteCenter.start();
+    const uploader = new ws_1.default(`ws://localhost:${config.PORT}`);
+    uploader.on('error', err => {
+        t.log(err);
+        t.fail();
+    });
+    yield new Promise(resolve => void uploader.on('open', resolve));
+    uploader.send(JSON.stringify(yield randomMessage()));
+    yield bluebird_1.default.delay(1000);
+    uploader.close();
+    yield new Promise(resolve => void uploader.on('close', resolve));
+    const orderbook = yield axios_1.default.get(`http://localhost:${config.PORT}/orderbook`, {
+        params: {
+            exchange: 'bitmex',
+            pair: 'btc.usd',
+        }
+    });
+    t.log(orderbook.data);
+    const trades = yield axios_1.default.get(`http://localhost:${config.PORT}/trades`, {
+        params: {
+            exchange: 'bitmex',
+            pair: 'btc.usd',
+        }
+    });
+    t.log(trades.data);
+    quoteCenter.stop();
+}));
+ava_1.default.serial('cleaner', (t) => __awaiter(this, void 0, void 0, function* () {
+    global.t = t;
+    const quoteCenter = new __1.default();
+    yield quoteCenter.start();
+    const uploader = new ws_1.default(`ws://localhost:${config.PORT}`);
+    uploader.on('error', err => {
+        t.log(err);
+        t.fail();
+    });
+    yield new Promise(resolve => void uploader.on('open', resolve));
+    uploader.send(JSON.stringify(yield randomMessage()));
+    yield bluebird_1.default.delay(5000);
+    uploader.send(JSON.stringify(yield randomMessage()));
+    uploader.close();
+    yield new Promise(resolve => void uploader.on('close', resolve));
+    yield axios_1.default.get(`http://localhost:${config.PORT}/trades`, {
+        params: {
+            exchange: 'bitmex',
+            pair: 'btc.usd',
+        }
+    }).then(res => res.data)
+        .then(data => t.log(data));
+    yield bluebird_1.default.delay(6000);
+    yield axios_1.default.get(`http://localhost:${config.PORT}/trades`, {
+        params: {
+            exchange: 'bitmex',
+            pair: 'btc.usd',
+        }
+    }).then(res => res.data)
+        .then(data => t.log(data));
     quoteCenter.stop();
 }));
 //# sourceMappingURL=test.js.map

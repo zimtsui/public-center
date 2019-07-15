@@ -53,8 +53,8 @@ class QuoteCenter {
                     market.updateTrades(data.trades);
                 if (data.orderbook)
                     market.updateOrderbook(data.orderbook);
-                global.t.log(data);
-                global.t.log(marketName);
+                // (<any>global).t.log(data);
+                // (<any>global).t.log(marketName);
             });
         });
         this.downServer.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
@@ -85,6 +85,7 @@ class QuoteCenter {
             yield next();
         }));
         this.downServer.use(router.routes());
+        this.httpServer.on('request', this.downServer.callback());
     }
     start( /* stopping = () => { } */) {
         // this.stopping = stopping;

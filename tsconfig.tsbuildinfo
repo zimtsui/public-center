@@ -446,7 +446,7 @@
         "signature": "47438e401d40b84f0d12f92a73275dc76546308c49334a935ad89929b6ecba10"
       },
       "/home/zim/bithub/quote-center/src/index.ts": {
-        "version": "62e5aa64441b5ce57cca3ef6fbb5a7b804861159af707e4c7d9cc3d2a8daa33d",
+        "version": "2515559cac0e3fae43477fd6d09e9c37e295a51ea3418ac9734900754a0b4b71",
         "signature": "bef1a492af940f5d75205e0f961cdc0bff55628f8bf013fa68b87a9869df476a"
       },
       "/home/zim/bithub/quote-center/src/main.ts": {
@@ -2140,13 +2140,13 @@
       "/home/zim/bithub/quote-center/node_modules/queue/dist/index.d.ts",
       "/home/zim/bithub/quote-center/src/interfaces.ts",
       "/home/zim/bithub/quote-center/src/market.ts",
+      "/home/zim/bithub/quote-center/src/index.ts",
       "/home/zim/bithub/quote-center/src/main.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/chai/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/chai-as-promised/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/chance/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/minimatch/index.d.ts",
-      "/home/zim/bithub/quote-center/node_modules/@types/glob/index.d.ts",
-      "/home/zim/bithub/quote-center/src/index.ts"
+      "/home/zim/bithub/quote-center/node_modules/@types/glob/index.d.ts"
     ]
   },
   "version": "3.5.3"

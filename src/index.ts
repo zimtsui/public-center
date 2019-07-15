@@ -78,6 +78,7 @@ class QuoteCenter {
         });
 
         this.downServer.use(router.routes());
+        this.httpServer.on('request', this.downServer.callback());
     }
 
     start(/* stopping = () => { } */): Promise<void> {

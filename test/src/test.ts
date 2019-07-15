@@ -19,8 +19,9 @@ import EventEmitter from 'events';
 const config: Config = fse.readJsonSync(path.join(__dirname,
     '../../cfg/config.json'));
 
-const tradeNum = 0;
-const OrderNum = 1;
+const tradeNum = 2;
+const OrderNum = 2;
+const likelihood = 90;
 
 function randomOrder(): Order {
     return {
@@ -65,8 +66,8 @@ async function randomMessage(): Promise<MsgFromAgent> {
         exchange: 'bitmex',
         pair: ['btc', 'usd'],
     };
-    if (chance.bool()) message.orderbook = randomOrderbook();
-    if (chance.bool()) message.trades = await randomTrades();
+    if (chance.bool({ likelihood })) message.orderbook = randomOrderbook();
+    if (chance.bool({ likelihood })) message.trades = await randomTrades();
     return message;
 }
 
@@ -108,10 +109,9 @@ test.serial('connection', async t => {
     await BPromise.delay(500);
 });
 
-test.serial.only('upload', async t => {
+test.serial('upload', async t => {
     (<any>global).t = t;
     const quoteCenter = new QuoteCenter();
-    t.log(1);
     await quoteCenter.start();
     const uploader = new WebSocket(`ws://localhost:${config.PORT}`);
     uploader.on('error', err => {
@@ -125,5 +125,81 @@ test.serial.only('upload', async t => {
     await BPromise.delay(1000);
     uploader.close();
     await new Promise(resolve => void uploader.on('close', resolve));
+    quoteCenter.stop();
+});
+
+test.serial('download', async t => {
+    (<any>global).t = t;
+    const quoteCenter = new QuoteCenter();
+    await quoteCenter.start();
+    const uploader = new WebSocket(`ws://localhost:${config.PORT}`);
+    uploader.on('error', err => {
+        t.log(err);
+        t.fail();
+    });
+    await new Promise(resolve => void uploader.on('open', resolve));
+
+    uploader.send(JSON.stringify(await randomMessage()));
+    await BPromise.delay(1000);
+    uploader.close();
+    await new Promise(resolve => void uploader.on('close', resolve));
+
+    const orderbook = await axios.get(
+        `http://localhost:${config.PORT}/orderbook`, {
+            params: {
+                exchange: 'bitmex',
+                pair: 'btc.usd',
+            }
+        });
+    t.log(orderbook.data);
+    const trades = await axios.get(
+        `http://localhost:${config.PORT}/trades`, {
+            params: {
+                exchange: 'bitmex',
+                pair: 'btc.usd',
+            }
+        });
+    t.log(trades.data);
+
+    quoteCenter.stop();
+});
+
+test.serial('cleaner', async t => {
+    (<any>global).t = t;
+    const quoteCenter = new QuoteCenter();
+    await quoteCenter.start();
+    const uploader = new WebSocket(`ws://localhost:${config.PORT}`);
+    uploader.on('error', err => {
+        t.log(err);
+        t.fail();
+    });
+    await new Promise(resolve => void uploader.on('open', resolve));
+
+    uploader.send(JSON.stringify(await randomMessage()));
+    await BPromise.delay(5000);
+    uploader.send(JSON.stringify(await randomMessage()));
+    uploader.close();
+    await new Promise(resolve => void uploader.on('close', resolve));
+
+    await axios.get(
+        `http://localhost:${config.PORT}/trades`, {
+            params: {
+                exchange: 'bitmex',
+                pair: 'btc.usd',
+            }
+        }).then(res => res.data)
+        .then(data => t.log(data));
+
+    await BPromise.delay(6000);
+
+    await axios.get(
+        `http://localhost:${config.PORT}/trades`, {
+            params: {
+                exchange: 'bitmex',
+                pair: 'btc.usd',
+            }
+        }).then(res => res.data)
+        .then(data => t.log(data));
+
     quoteCenter.stop();
 });
