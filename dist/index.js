@@ -20,8 +20,8 @@ const koa_1 = __importDefault(require("koa"));
 const koa_router_1 = __importDefault(require("koa-router"));
 const market_1 = __importDefault(require("./market"));
 class QuoteCenter {
-    constructor(destructing = () => { }) {
-        this.destructing = destructing;
+    constructor() {
+        this.stopping = undefined;
         this.config = fs_extra_1.default.readJsonSync('../cfg/config.json');
         this.httpServer = http_1.default.createServer();
         this.wsServer = new ws_1.default.Server({ server: this.httpServer });
@@ -38,7 +38,7 @@ class QuoteCenter {
                     this.markets.set(marketName, new market_1.default(err => {
                         this.markets.delete(marketName);
                         if (err)
-                            this.destructor(err);
+                            this.stop(err);
                     }));
                 }
                 const market = this.markets.get(marketName);
@@ -77,21 +77,19 @@ class QuoteCenter {
         this.koa.use(this.router.routes());
         this.httpServer.on('request', this.koa.callback());
     }
-    start() {
+    start(stopping = () => { }) {
+        this.stopping = stopping;
         this.httpServer.listen(this.config.PORT);
         console.log('listening');
         return Promise.resolve();
     }
-    stop() {
+    stop(err) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log('stopping');
+            this.stopping(err);
             yield bluebird_1.default.promisify(this.httpServer.close.bind(this.httpServer))();
             yield bluebird_1.default.all([...this.markets.values()].map(market => market.destructor()));
         });
-    }
-    destructor(err) {
-        this.destructing(err);
-        return this.stop();
     }
 }
 exports.default = QuoteCenter;

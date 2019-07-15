@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import Pollerloop from 'pollerloop';
+import { Polling } from 'pollerloop';
 import Queue from 'queue';
 import fse from 'fs-extra';
 import { Config, Trade, Orderbook } from './interfaces';
@@ -15,7 +16,7 @@ class Market {
         userConfig?: Config
     ) {
         this.config = { ...this.defaultConfig, ...userConfig };
-        this.cleaner = new Pollerloop(async (stopping, isRunning, delay) => {
+        const polling: Polling = async (stopping, isRunning, delay) => {
             for (; isRunning();) {
                 const timer = delay(this.config.INTERVAL_OF_CLEANING);
 
@@ -28,24 +29,24 @@ class Market {
                 await timer;
             }
             stopping();
-            return isRunning();
-        });
-        this.cleaner.start(this.destructing);
+        }
+        this.cleaner = new Pollerloop(polling);
+        this.cleaner.start();
     }
 
-    destructor(): Promise<boolean> {
+    destructor(): void {
         this.destructing();
-        return this.cleaner.stop();
+        this.cleaner.stop();
     }
 
     getTrades(from = new Date(0)): Trade[] {
         return this.trades.takeRearWhile(trade => trade.time >= from);
     }
 
-    getOrderbook(depth?: number): Orderbook {
+    getOrderbook(depth = Infinity): Orderbook {
         return {
-            bids: _.take(this.orderbook.bids, depth || Infinity),
-            asks: _.take(this.orderbook.asks, depth || Infinity),
+            bids: _.take(this.orderbook.bids, depth),
+            asks: _.take(this.orderbook.asks, depth),
         };
     }
 

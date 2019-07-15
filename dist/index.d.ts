@@ -1,14 +1,13 @@
 declare class QuoteCenter {
-    private destructing;
+    private stopping;
     private config;
     private httpServer;
     private wsServer;
     private koa;
     private router;
     private markets;
-    constructor(destructing?: (err?: Error) => void);
-    start(): Promise<void>;
-    stop(): Promise<void>;
-    destructor(err?: Error): Promise<void>;
+    constructor();
+    start(stopping?: (err?: Error) => void): Promise<void>;
+    stop(err?: Error): Promise<void>;
 }
 export default QuoteCenter;

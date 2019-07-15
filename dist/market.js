@@ -33,11 +33,13 @@ class Market {
             stopping();
             return isRunning();
         }));
-        this.cleaner.start(this.destructing);
+        this.cleaner.start();
     }
     destructor() {
-        this.destructing();
-        return this.cleaner.stop();
+        return __awaiter(this, void 0, void 0, function* () {
+            this.destructing();
+            yield this.cleaner.stop();
+        });
     }
     getTrades(from = new Date(0)) {
         return this.trades.takeRearWhile(trade => trade.time >= from);

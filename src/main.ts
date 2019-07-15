@@ -1,23 +1,24 @@
 import QuoteCenter from '.';
 
 process.on('unhandledRejection', (err) => {
-    console.log(err);
+    console.log('unhandledRejection', err);
     process.exit(-1);
 });
 process.on('uncaughtException', (err) => {
-    console.log(err);
+    console.log('uncaughtException', err);
     process.exit(-1);
 });
 
-const main = new QuoteCenter();
+const quoteCenter = new QuoteCenter();
 
-main.start()
-    .catch(err => {
-        console.log(err);
-        process.exit(-1);
-    }).then(() => {
-        process.once('SIGINT', () => {
-            process.once('SIGINT', () => process.exit(-1));
-            main.destructor();
-        });
+quoteCenter.start(err => {
+    console.log(err);
+}).catch(err => {
+    console.log(err);
+    process.exit(-1);
+}).then(() => {
+    process.once('SIGINT', () => {
+        process.once('SIGINT', () => process.exit(-1));
+        quoteCenter.stop();
     });
+});

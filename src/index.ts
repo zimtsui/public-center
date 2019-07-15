@@ -9,6 +9,7 @@ import Market from './market';
 import { MsgFromAgent, Config } from './interfaces';
 
 class QuoteCenter {
+    private stopping: ((err?: Error) => void) | undefined = undefined;
     private config: Config = fse.readJsonSync('../cfg/config.json');
     private httpServer = http.createServer();
     private wsServer = new WebSocket.Server({ server: this.httpServer });
@@ -16,7 +17,7 @@ class QuoteCenter {
     private router = new Router();
     private markets = new Map<string, Market>();
 
-    constructor(private destructing: (err?: Error) => void = () => { }) {
+    constructor() {
         this.httpServer.timeout = 0;
         this.httpServer.keepAliveTimeout = 0;
         this.wsServer.on('connection', (quoteAgent) => {
@@ -28,7 +29,7 @@ class QuoteCenter {
                 if (!this.markets.has(marketName)) {
                     this.markets.set(marketName, new Market(err => {
                         this.markets.delete(marketName);
-                        if (err) this.destructor(err);
+                        if (err) this.stop(err);
                     }));
                 }
                 const market = this.markets.get(marketName);
@@ -67,25 +68,21 @@ class QuoteCenter {
         this.httpServer.on('request', this.koa.callback());
     }
 
-    start(): Promise<void> {
+    start(stopping: (err?: Error) => void = () => { }): Promise<void> {
+        this.stopping = stopping;
         this.httpServer.listen(this.config.PORT);
         console.log('listening');
         return Promise.resolve();
     }
 
-    async stop(): Promise<void> {
+    async stop(err?: Error): Promise<void> {
         console.log('stopping');
+        this.stopping!(err);
         await BPromise.promisify(this.httpServer.close.bind(this.httpServer))();
         await BPromise.all(
             [...this.markets.values()].map(market => market.destructor())
         );
     }
-
-    destructor(err?: Error): Promise<void> {
-        this.destructing(err);
-        return this.stop();
-    }
 }
 
 export default QuoteCenter;
-

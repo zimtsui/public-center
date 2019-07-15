@@ -430,8 +430,8 @@
         "signature": "7afda1e28689df9319130fd07f59c496061f636bee4bead58d6993917682933c"
       },
       "/home/zim/bithub/quote-center/node_modules/pollerloop/dist/index.d.ts": {
-        "version": "694740ef1b7a0f844e41412628511ad5730d17e9a9bc3b857cc435e123c07e3d",
-        "signature": "694740ef1b7a0f844e41412628511ad5730d17e9a9bc3b857cc435e123c07e3d"
+        "version": "77f595aff60d0952f60a13738e899d2c04fcc57babfc913357750ebf3830b9cc",
+        "signature": "77f595aff60d0952f60a13738e899d2c04fcc57babfc913357750ebf3830b9cc"
       },
       "/home/zim/bithub/quote-center/node_modules/queue/dist/index.d.ts": {
         "version": "08c2d0ddc692aac55667c7955a27ce98671c4f881faed785cd07da0cfaa37cde",
@@ -442,15 +442,15 @@
         "signature": "49bb5e4a3b0c2ac8a6498f695fea5fc384d446cab4b86efb0761d74026a3dcf4"
       },
       "/home/zim/bithub/quote-center/src/market.ts": {
-        "version": "43c183c7edfd260328872e2457e6260247034bd4f2547fbaf18d7310a4a52ffb",
-        "signature": "5258844aef8793cd77f332c4bac4a79721a9f3e481512069b05105474ba56d5b"
+        "version": "b183fc2af28d731a3f5bce907a86dbae944afeb3aa9c70536ae544d4ade04b0d",
+        "signature": "1758c0f566681b3139f9622b7afe7bcda8798ac715b3efb477a694bc868f2fc1"
       },
       "/home/zim/bithub/quote-center/src/index.ts": {
-        "version": "6d64ef30186a665d7c4cc69c64dcfc2e4b8b8f61b6759533388bbb85ef890bcd",
-        "signature": "5c10d4b4ebf1512a2fe2ed19fbf6c74bb8b0ed90d4d2cd3a50c18b253cb7cbc7"
+        "version": "2b9fcdd9e2e26219bc95e5f7bb6ed841fb673c429cb88e7a747ac813dc6caf57",
+        "signature": "5b7ed37e64a1246b12ed26802f3872efeee09a00677f9716cbf79a9dc942169a"
       },
       "/home/zim/bithub/quote-center/src/main.ts": {
-        "version": "7f69f9cc00f003c96784b0986ee9930597cac5f7e09485de246e6b3f952042de",
+        "version": "f10d8d51555bed5fb4ecaf3c8bc61738031d64a462b071c6354e15b5aae4569b",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       }
     },
@@ -2065,9 +2065,9 @@
       "/home/zim/bithub/quote-center/node_modules/@types/koa-compose/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/koa/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/koa-router/index.d.ts",
-      "/home/zim/bithub/quote-center/node_modules/pollerloop/dist/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/queue/dist/index.d.ts",
       "/home/zim/bithub/quote-center/src/interfaces.ts",
+      "/home/zim/bithub/quote-center/node_modules/pollerloop/dist/index.d.ts",
       "/home/zim/bithub/quote-center/src/market.ts",
       "/home/zim/bithub/quote-center/src/index.ts",
       "/home/zim/bithub/quote-center/src/main.ts"
