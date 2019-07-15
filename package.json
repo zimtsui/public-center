@@ -22,10 +22,12 @@
     "devDependencies": {
         "@types/chai": "^4.1.7",
         "@types/chai-as-promised": "^7.1.0",
+        "@types/chance": "^1.0.5",
         "ava": "^2.2.0",
         "axios": "^0.19.0",
         "chai": "^4.2.0",
         "chai-as-promised": "^7.1.1",
+        "chance": "^1.0.18",
         "typescript": "^3.5.3"
     },
     "dependencies": {

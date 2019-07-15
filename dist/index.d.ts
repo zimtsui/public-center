@@ -1,6 +1,5 @@
 declare class QuoteCenter {
     private state;
-    private config;
     private httpServer;
     private upServer;
     private downServer;

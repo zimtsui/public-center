@@ -10,7 +10,7 @@ interface Order {
 }
 
 interface Trade extends Order {
-    time: Date;
+    time: number;
 }
 
 interface Orderbook {

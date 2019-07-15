@@ -21,6 +21,7 @@ const assert_1 = __importDefault(require("assert"));
 const koa_1 = __importDefault(require("koa"));
 const koa_router_1 = __importDefault(require("koa-router"));
 const market_1 = __importDefault(require("./market"));
+const config = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
 var States;
 (function (States) {
     States[States["CONSTRUCTED"] = 0] = "CONSTRUCTED";
@@ -31,7 +32,6 @@ class QuoteCenter {
     constructor() {
         this.state = States.CONSTRUCTED;
         // private stopping: (() => void) | undefined = undefined;
-        this.config = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
         this.httpServer = http_1.default.createServer();
         this.upServer = new ws_1.default.Server({ server: this.httpServer });
         this.downServer = new koa_1.default();
@@ -39,6 +39,7 @@ class QuoteCenter {
         this.httpServer.timeout = 0;
         this.httpServer.keepAliveTimeout = 0;
         this.upServer.on('connection', (quoteAgent) => {
+            global.t.log('connection');
             quoteAgent.on('message', (message) => {
                 const data = JSON.parse(message);
                 const marketName = lodash_1.default.toLower(`${data.exchange}.${data.pair[0]}.${data.pair[1]}`);
@@ -52,6 +53,8 @@ class QuoteCenter {
                     market.updateTrades(data.trades);
                 if (data.orderbook)
                     market.updateOrderbook(data.orderbook);
+                global.t.log(data);
+                global.t.log(marketName);
             });
         });
         this.downServer.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
@@ -87,7 +90,7 @@ class QuoteCenter {
         // this.stopping = stopping;
         // console.log('listening');
         this.state = States.STARTED;
-        return new bluebird_1.default(resolve => void this.httpServer.listen(this.config.PORT, resolve));
+        return new bluebird_1.default(resolve => void this.httpServer.listen(config.PORT, resolve));
     }
     stop() {
         assert_1.default(this.state === States.STARTED);

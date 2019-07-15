@@ -15,20 +15,26 @@ const lodash_1 = __importDefault(require("lodash"));
 const pollerloop_1 = __importDefault(require("pollerloop"));
 const queue_1 = __importDefault(require("queue"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
+const path_1 = __importDefault(require("path"));
+const defaultConfig = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
 class Market {
     constructor(destructing = () => { }, userConfig) {
         this.destructing = destructing;
-        this.defaultConfig = fs_extra_1.default.readJsonSync('../cfg/config.json');
         this.trades = new queue_1.default();
         this.orderbook = { asks: [], bids: [], };
-        this.config = Object.assign({}, this.defaultConfig, userConfig);
+        this.config = Object.assign({}, defaultConfig, userConfig);
         const polling = (stopping, isRunning, delay) => __awaiter(this, void 0, void 0, function* () {
             for (; isRunning();) {
-                const timer = delay(this.config.INTERVAL_OF_CLEANING);
-                const nowTimeStamp = Date.now();
-                this.trades.shiftWhile(trade => trade.time.getTime() < nowTimeStamp - this.config.TTL);
+                /**
+                 * await delay 必须放循环前面，不然 market 构造析构就在同一个
+                 * eventloop 了。
+                 */
+                yield delay(this.config.INTERVAL_OF_CLEANING);
+                if (!isRunning())
+                    break;
+                const now = Date.now();
+                this.trades.shiftWhile(trade => trade.time < now - this.config.TTL);
                 this.trades.length || this.destructor();
-                yield timer;
             }
             stopping();
         });
@@ -42,7 +48,7 @@ class Market {
         this.destructing();
         this.cleaner.stop();
     }
-    getTrades(from = new Date(0)) {
+    getTrades(from = -Infinity) {
         return this.trades.takeRearWhile(trade => trade.time >= from);
     }
     getOrderbook(depth = Infinity) {

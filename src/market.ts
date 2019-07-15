@@ -3,10 +3,13 @@ import Pollerloop from 'pollerloop';
 import { Polling } from 'pollerloop';
 import Queue from 'queue';
 import fse from 'fs-extra';
+import path from 'path';
 import { Config, Trade, Orderbook } from './interfaces';
 
+const defaultConfig: Config = fse.readJsonSync(path.join(__dirname,
+    '../cfg/config.json'));
+
 class Market {
-    private defaultConfig: Config = fse.readJsonSync('../cfg/config.json');
     private config: Config;
     private trades = new Queue<Trade>();
     private orderbook: Orderbook = { asks: [], bids: [], };
@@ -15,18 +18,21 @@ class Market {
         private destructing: () => void = () => { },
         userConfig?: Config
     ) {
-        this.config = { ...this.defaultConfig, ...userConfig };
+        this.config = { ...defaultConfig, ...userConfig };
         const polling: Polling = async (stopping, isRunning, delay) => {
             for (; isRunning();) {
-                const timer = delay(this.config.INTERVAL_OF_CLEANING);
+                /**
+                 * await delay 必须放循环前面，不然 market 构造析构就在同一个
+                 * eventloop 了。
+                 */
+                await delay(this.config.INTERVAL_OF_CLEANING);
+                if (!isRunning()) break;
 
-                const nowTimeStamp = Date.now();
+                const now = Date.now();
                 this.trades.shiftWhile(
-                    trade => trade.time.getTime() < nowTimeStamp - this.config.TTL
+                    trade => trade.time < now - this.config.TTL
                 );
                 this.trades.length || this.destructor();
-
-                await timer;
             }
             stopping();
         }
@@ -42,7 +48,7 @@ class Market {
         this.cleaner.stop();
     }
 
-    getTrades(from = new Date(0)): Trade[] {
+    getTrades(from = -Infinity): Trade[] {
         return this.trades.takeRearWhile(trade => trade.time >= from);
     }
 

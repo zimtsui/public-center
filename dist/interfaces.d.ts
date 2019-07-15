@@ -8,7 +8,7 @@ interface Order {
     amount: number;
 }
 interface Trade extends Order {
-    time: Date;
+    time: number;
 }
 interface Orderbook {
     bids: Order[];

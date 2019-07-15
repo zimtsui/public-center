@@ -10,6 +10,9 @@ import Router from 'koa-router';
 import Market from './market';
 import { MsgFromAgent, Config } from './interfaces';
 
+const config: Config = fse.readJsonSync(path.join(__dirname,
+    '../cfg/config.json'));
+
 enum States {
     CONSTRUCTED,
     STARTED,
@@ -19,8 +22,7 @@ enum States {
 class QuoteCenter {
     private state = States.CONSTRUCTED;
     // private stopping: (() => void) | undefined = undefined;
-    private config: Config = fse.readJsonSync(path.join(__dirname,
-        '../cfg/config.json'));
+
     private httpServer = http.createServer();
     private upServer = new WebSocket.Server({ server: this.httpServer });
     private downServer = new Koa();
@@ -30,6 +32,7 @@ class QuoteCenter {
         this.httpServer.timeout = 0;
         this.httpServer.keepAliveTimeout = 0;
         this.upServer.on('connection', (quoteAgent) => {
+            (<any>global).t.log('connection');
             quoteAgent.on('message', (message: string) => {
                 const data: MsgFromAgent = JSON.parse(message);
                 const marketName = _.toLower(
@@ -42,6 +45,8 @@ class QuoteCenter {
                 const market = this.markets.get(marketName);
                 if (data.trades) market!.updateTrades(data.trades);
                 if (data.orderbook) market!.updateOrderbook(data.orderbook);
+                // (<any>global).t.log(data);
+                // (<any>global).t.log(marketName);
             });
         });
 
@@ -80,7 +85,7 @@ class QuoteCenter {
         // console.log('listening');
         this.state = States.STARTED;
         return new BPromise(resolve =>
-            void this.httpServer.listen(this.config.PORT, resolve)
+            void this.httpServer.listen(config.PORT, resolve)
         );
     }
 
