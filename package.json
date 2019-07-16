@@ -39,6 +39,7 @@
         "@types/ws": "^6.0.1",
         "bluebird": "^3.5.5",
         "fs-extra": "^8.1.0",
+        "interfaces": "git+https://github.com/zimtsui/interfaces.git",
         "koa": "^2.7.0",
         "koa-router": "^7.4.0",
         "lodash": "^4.17.13",

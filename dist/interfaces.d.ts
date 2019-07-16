@@ -1,19 +1,4 @@
-declare enum Action {
-    BID = "bid",
-    ASK = "ask"
-}
-interface Order {
-    action: Action;
-    price: number;
-    amount: number;
-}
-interface Trade extends Order {
-    time: number;
-}
-interface Orderbook {
-    bids: Order[];
-    asks: Order[];
-}
+import { Action, Trade, Order, Orderbook } from 'interfaces';
 interface Config {
     PORT: number;
     INTERVAL_OF_CLEANING: number;

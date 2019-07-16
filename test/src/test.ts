@@ -164,7 +164,7 @@ test.serial('download', async t => {
     await quoteCenter.stop();
 });
 
-test.serial('cleaner', async t => {
+test.serial.only('cleaner', async t => {
     (<any>global).t = t;
     const quoteCenter = new QuoteCenter();
     await quoteCenter.start();
