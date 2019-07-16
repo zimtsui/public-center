@@ -8,7 +8,7 @@ const chance = new Chance();
 import axios from 'axios';
 import fse from 'fs-extra';
 import path from 'path';
-import BPromise from 'bluebird';
+import Bluebird from 'bluebird';
 import _ from 'lodash';
 import WebSocket from 'ws';
 import { Config, MsgFromAgent, Orderbook, Trade, Order, Action } from '../../dist/interfaces';
@@ -56,7 +56,7 @@ async function randomTrades(): Promise<Trade[]> {
     const trades: Trade[] = [];
     for (const i of _.range(0, tradeNum)) {
         trades.push(randomTrade());
-        await BPromise.delay(1);
+        await Bluebird.delay(1);
     }
     return trades.reverse();
 }
@@ -77,7 +77,7 @@ test.serial('start and stop', async t => {
     await quoteCenter.start();
     t.log('started');
     t.log('stopping');
-    quoteCenter.stop();
+    await quoteCenter.stop();
 });
 
 test.serial.skip('random', async t => {
@@ -100,13 +100,13 @@ test.serial('connection', async t => {
     t.log(2);
     await new Promise(resolve => void uploader.on('open', resolve));
     t.log(3);
-    await BPromise.delay(500);
+    await Bluebird.delay(500);
     uploader.close();
     t.log(4);
     await new Promise(resolve => void uploader.on('close', resolve));
-    quoteCenter.stop();
+    await quoteCenter.stop();
     t.log(5);
-    await BPromise.delay(500);
+    await Bluebird.delay(500);
 });
 
 test.serial('upload', async t => {
@@ -119,13 +119,13 @@ test.serial('upload', async t => {
         t.fail();
     });
     await new Promise(resolve => void uploader.on('open', resolve));
-    await BPromise.delay(500);
+    await Bluebird.delay(500);
 
     uploader.send(JSON.stringify(await randomMessage()));
-    await BPromise.delay(1000);
+    await Bluebird.delay(1000);
     uploader.close();
     await new Promise(resolve => void uploader.on('close', resolve));
-    quoteCenter.stop();
+    await quoteCenter.stop();
 });
 
 test.serial('download', async t => {
@@ -140,7 +140,7 @@ test.serial('download', async t => {
     await new Promise(resolve => void uploader.on('open', resolve));
 
     uploader.send(JSON.stringify(await randomMessage()));
-    await BPromise.delay(1000);
+    await Bluebird.delay(1000);
     uploader.close();
     await new Promise(resolve => void uploader.on('close', resolve));
 
@@ -161,7 +161,7 @@ test.serial('download', async t => {
         });
     t.log(trades.data);
 
-    quoteCenter.stop();
+    await quoteCenter.stop();
 });
 
 test.serial('cleaner', async t => {
@@ -176,7 +176,7 @@ test.serial('cleaner', async t => {
     await new Promise(resolve => void uploader.on('open', resolve));
 
     uploader.send(JSON.stringify(await randomMessage()));
-    await BPromise.delay(5000);
+    await Bluebird.delay(5000);
     uploader.send(JSON.stringify(await randomMessage()));
     uploader.close();
     await new Promise(resolve => void uploader.on('close', resolve));
@@ -190,7 +190,7 @@ test.serial('cleaner', async t => {
         }).then(res => res.data)
         .then(data => t.log(data));
 
-    await BPromise.delay(6000);
+    await Bluebird.delay(6000);
 
     await axios.get(
         `http://localhost:${config.PORT}/trades`, {
@@ -201,5 +201,5 @@ test.serial('cleaner', async t => {
         }).then(res => res.data)
         .then(data => t.log(data));
 
-    quoteCenter.stop();
+    await quoteCenter.stop();
 });

@@ -1,6 +1,7 @@
 import { Config, Trade, Orderbook } from './interfaces';
 declare class Market {
     private destructing;
+    private state;
     private config;
     private trades;
     private orderbook;

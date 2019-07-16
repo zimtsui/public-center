@@ -82,7 +82,7 @@ ava_1.default.serial('start and stop', (t) => __awaiter(this, void 0, void 0, fu
     yield quoteCenter.start();
     t.log('started');
     t.log('stopping');
-    quoteCenter.stop();
+    yield quoteCenter.stop();
 }));
 ava_1.default.serial.skip('random', (t) => __awaiter(this, void 0, void 0, function* () {
     t.log(randomOrder());
@@ -107,7 +107,7 @@ ava_1.default.serial('connection', (t) => __awaiter(this, void 0, void 0, functi
     uploader.close();
     t.log(4);
     yield new Promise(resolve => void uploader.on('close', resolve));
-    quoteCenter.stop();
+    yield quoteCenter.stop();
     t.log(5);
     yield bluebird_1.default.delay(500);
 }));
@@ -126,7 +126,7 @@ ava_1.default.serial('upload', (t) => __awaiter(this, void 0, void 0, function* 
     yield bluebird_1.default.delay(1000);
     uploader.close();
     yield new Promise(resolve => void uploader.on('close', resolve));
-    quoteCenter.stop();
+    yield quoteCenter.stop();
 }));
 ava_1.default.serial('download', (t) => __awaiter(this, void 0, void 0, function* () {
     global.t = t;
@@ -156,7 +156,7 @@ ava_1.default.serial('download', (t) => __awaiter(this, void 0, void 0, function
         }
     });
     t.log(trades.data);
-    quoteCenter.stop();
+    yield quoteCenter.stop();
 }));
 ava_1.default.serial('cleaner', (t) => __awaiter(this, void 0, void 0, function* () {
     global.t = t;
@@ -188,6 +188,6 @@ ava_1.default.serial('cleaner', (t) => __awaiter(this, void 0, void 0, function*
         }
     }).then(res => res.data)
         .then(data => t.log(data));
-    quoteCenter.stop();
+    yield quoteCenter.stop();
 }));
 //# sourceMappingURL=test.js.map

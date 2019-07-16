@@ -16,15 +16,22 @@ const pollerloop_1 = __importDefault(require("pollerloop"));
 const queue_1 = __importDefault(require("queue"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const path_1 = __importDefault(require("path"));
+const assert_1 = __importDefault(require("assert"));
 const defaultConfig = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
+var States;
+(function (States) {
+    States[States["RUNNING"] = 0] = "RUNNING";
+    States[States["DESTRUCTED"] = 1] = "DESTRUCTED";
+})(States || (States = {}));
 class Market {
     constructor(destructing = () => { }, userConfig) {
         this.destructing = destructing;
+        this.state = States.RUNNING;
         this.trades = new queue_1.default();
         this.orderbook = { asks: [], bids: [], };
         this.config = Object.assign({}, defaultConfig, userConfig);
         const polling = (stopping, isRunning, delay) => __awaiter(this, void 0, void 0, function* () {
-            for (; isRunning();) {
+            for (;;) {
                 /**
                  * await delay 必须放循环前面，不然 market 构造析构就在同一个
                  * eventloop 了。
@@ -45,23 +52,29 @@ class Market {
         this.cleaner.start();
     }
     destructor() {
+        assert_1.default(this.state === States.RUNNING);
+        this.state = States.DESTRUCTED;
         this.destructing();
         this.cleaner.stop();
     }
     getTrades(from = -Infinity) {
+        assert_1.default(this.state === States.RUNNING);
         return this.trades.takeRearWhile(trade => trade.time >= from);
     }
     getOrderbook(depth = Infinity) {
+        assert_1.default(this.state === States.RUNNING);
         return {
             bids: lodash_1.default.take(this.orderbook.bids, depth),
             asks: lodash_1.default.take(this.orderbook.asks, depth),
         };
     }
     updateTrades(newTrades) {
+        assert_1.default(this.state === States.RUNNING);
         const latest = this.trades.length ? this.trades.rearElem.time : new Date(0);
         this.trades.push(...lodash_1.default.takeWhile(newTrades, trade => trade.time > latest).reverse());
     }
     updateOrderbook(newOrderbook) {
+        assert_1.default(this.state === States.RUNNING);
         this.orderbook = newOrderbook;
     }
 }

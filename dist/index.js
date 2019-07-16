@@ -31,15 +31,36 @@ var States;
 class QuoteCenter {
     constructor() {
         this.state = States.CONSTRUCTED;
-        // private stopping: (() => void) | undefined = undefined;
         this.httpServer = http_1.default.createServer();
         this.upServer = new ws_1.default.Server({ server: this.httpServer });
         this.downServer = new koa_1.default();
         this.markets = new Map();
+        this.configureHttpServer();
+        this.configureDownServer();
+        this.configureUpServer();
+    }
+    start() {
+        assert_1.default(this.state === States.CONSTRUCTED);
+        this.state = States.STARTED;
+        return new bluebird_1.default(resolve => void this.httpServer.listen(config.PORT, resolve));
+    }
+    stop() {
+        assert_1.default(this.state === States.STARTED);
+        this.state = States.STOPPING;
+        this.markets.forEach(market => market.destructor());
+        return new Promise((resolve, reject) => void this.httpServer.close(err => {
+            if (err)
+                reject(err);
+            else
+                resolve();
+        }));
+    }
+    configureHttpServer() {
         this.httpServer.timeout = 0;
         this.httpServer.keepAliveTimeout = 0;
+    }
+    configureUpServer() {
         this.upServer.on('connection', (quoteAgent) => {
-            global.t.log('connection');
             quoteAgent.on('message', (message) => {
                 const data = JSON.parse(message);
                 const marketName = lodash_1.default.toLower(`${data.exchange}.${data.pair[0]}.${data.pair[1]}`);
@@ -53,10 +74,10 @@ class QuoteCenter {
                     market.updateTrades(data.trades);
                 if (data.orderbook)
                     market.updateOrderbook(data.orderbook);
-                // (<any>global).t.log(data);
-                // (<any>global).t.log(marketName);
             });
         });
+    }
+    configureDownServer() {
         this.downServer.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
             ctx.marketName = lodash_1.default.toLower(`${ctx.query.exchange}.${ctx.query.pair}`);
             yield next();
@@ -86,20 +107,6 @@ class QuoteCenter {
         }));
         this.downServer.use(router.routes());
         this.httpServer.on('request', this.downServer.callback());
-    }
-    start( /* stopping = () => { } */) {
-        // this.stopping = stopping;
-        // console.log('listening');
-        this.state = States.STARTED;
-        return new bluebird_1.default(resolve => void this.httpServer.listen(config.PORT, resolve));
-    }
-    stop() {
-        assert_1.default(this.state === States.STARTED);
-        this.state = States.STOPPING;
-        // console.log('stopping');
-        // this.stopping!();
-        this.httpServer.close();
-        this.markets.forEach(market => market.destructor());
     }
 }
 exports.default = QuoteCenter;

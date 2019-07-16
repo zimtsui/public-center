@@ -6,6 +6,9 @@ declare class QuoteCenter {
     private markets;
     constructor();
     start(): Promise<void>;
-    stop(): void;
+    stop(): Promise<void>;
+    private configureHttpServer;
+    private configureUpServer;
+    private configureDownServer;
 }
 export default QuoteCenter;

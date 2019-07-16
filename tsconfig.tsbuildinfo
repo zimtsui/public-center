@@ -286,8 +286,8 @@
         "signature": "e98d697adf809fc14dc88ed4e00e4f0e0e381ca23d6d9320cf01af87e801f725"
       },
       "/home/zim/bithub/quote-center/node_modules/@types/node/vm.d.ts": {
-        "version": "040daf5e7603c7468c7c3ed4fe8b5c22cdf1eb4a2ad67dc5c03e51c36ceb8c00",
-        "signature": "040daf5e7603c7468c7c3ed4fe8b5c22cdf1eb4a2ad67dc5c03e51c36ceb8c00"
+        "version": "ad20b1311e55187f8eeefdd282a02dbc70e5ac0cf8ab4cabae99c142b32cc562",
+        "signature": "ad20b1311e55187f8eeefdd282a02dbc70e5ac0cf8ab4cabae99c142b32cc562"
       },
       "/home/zim/bithub/quote-center/node_modules/@types/node/worker_threads.d.ts": {
         "version": "7780573ed8387aaadcc61d87f3d60d77dabf1e060da252dc72ab1d73401988bb",
@@ -430,8 +430,8 @@
         "signature": "7afda1e28689df9319130fd07f59c496061f636bee4bead58d6993917682933c"
       },
       "/home/zim/bithub/quote-center/node_modules/pollerloop/dist/index.d.ts": {
-        "version": "ba9fff6eb49e74425a1ab438d4a73c74ce7fc3ae9a775e0f8db0246cdaabef9a",
-        "signature": "ba9fff6eb49e74425a1ab438d4a73c74ce7fc3ae9a775e0f8db0246cdaabef9a"
+        "version": "2e8ff5fa07cc1a22f13a5f17fb66f2aa9975d6bc3be3d8fa4873c5b33b93e9de",
+        "signature": "2e8ff5fa07cc1a22f13a5f17fb66f2aa9975d6bc3be3d8fa4873c5b33b93e9de"
       },
       "/home/zim/bithub/quote-center/node_modules/queue/dist/index.d.ts": {
         "version": "08c2d0ddc692aac55667c7955a27ce98671c4f881faed785cd07da0cfaa37cde",
@@ -442,12 +442,12 @@
         "signature": "5fc41562299a994ee609d775a7affca625dbf7cff150ecfe8c7d26c9f4979a50"
       },
       "/home/zim/bithub/quote-center/src/market.ts": {
-        "version": "eec0ff3d056d64a00e87acd898c2ab508b3bcf23717a7e7ac8ee4e61d9c19206",
-        "signature": "47438e401d40b84f0d12f92a73275dc76546308c49334a935ad89929b6ecba10"
+        "version": "5b66a3f930e7457e69c6e023742dab9366aef96e19c34ba3c1b1b17411512442",
+        "signature": "364cce22728df37f0d900773912e214edb5837e5d37706ec30c93658db6b3e81"
       },
       "/home/zim/bithub/quote-center/src/index.ts": {
-        "version": "2515559cac0e3fae43477fd6d09e9c37e295a51ea3418ac9734900754a0b4b71",
-        "signature": "bef1a492af940f5d75205e0f961cdc0bff55628f8bf013fa68b87a9869df476a"
+        "version": "582f402d0873ee0bacdeb7bc0e88a8f3991facdfb9ecc0edf6bb7598acac003a",
+        "signature": "c74c0003107284aeba54483105c6263b3882f807233f1dd9dc111e01f0d0bdf6"
       },
       "/home/zim/bithub/quote-center/src/main.ts": {
         "version": "f787d86380ee56738a913941055cce2da4624e52b85a24453410059cff5dfc65",
@@ -1227,6 +1227,7 @@
         "/home/zim/bithub/quote-center/node_modules/queue/dist/index.d.ts",
         "/home/zim/bithub/quote-center/node_modules/@types/fs-extra/index.d.ts",
         "/home/zim/bithub/quote-center/node_modules/@types/node/path.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/assert.d.ts",
         "/home/zim/bithub/quote-center/src/interfaces.ts",
         "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
         "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
@@ -2140,13 +2141,13 @@
       "/home/zim/bithub/quote-center/node_modules/queue/dist/index.d.ts",
       "/home/zim/bithub/quote-center/src/interfaces.ts",
       "/home/zim/bithub/quote-center/src/market.ts",
-      "/home/zim/bithub/quote-center/src/index.ts",
-      "/home/zim/bithub/quote-center/src/main.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/chai/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/chai-as-promised/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/chance/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/minimatch/index.d.ts",
-      "/home/zim/bithub/quote-center/node_modules/@types/glob/index.d.ts"
+      "/home/zim/bithub/quote-center/node_modules/@types/glob/index.d.ts",
+      "/home/zim/bithub/quote-center/src/index.ts",
+      "/home/zim/bithub/quote-center/src/main.ts"
     ]
   },
   "version": "3.5.3"

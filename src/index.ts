@@ -1,4 +1,4 @@
-import BPromise from 'bluebird';
+import Bluebird from 'bluebird';
 import fse from 'fs-extra';
 import WebSocket from 'ws';
 import http from 'http';
@@ -21,20 +21,44 @@ enum States {
 
 class QuoteCenter {
     private state = States.CONSTRUCTED;
-    // private stopping: (() => void) | undefined = undefined;
-
     private httpServer = http.createServer();
     private upServer = new WebSocket.Server({ server: this.httpServer });
     private downServer = new Koa();
     private markets = new Map<string, Market>();
 
     constructor() {
+        this.configureHttpServer();
+        this.configureDownServer();
+        this.configureUpServer();
+    }
+
+    start(): Promise<void> {
+        assert(this.state === States.CONSTRUCTED);
+        this.state = States.STARTED;
+        return new Bluebird(resolve =>
+            void this.httpServer.listen(config.PORT, resolve)
+        );
+    }
+
+    stop(): Promise<void> {
+        assert(this.state === States.STARTED);
+        this.state = States.STOPPING;
+        this.markets.forEach(market => market.destructor());
+        return new Promise((resolve, reject) => void this.httpServer.close(err => {
+            if (err) reject(err); else resolve();
+        }));
+    }
+
+    private configureHttpServer(): void {
         this.httpServer.timeout = 0;
         this.httpServer.keepAliveTimeout = 0;
+    }
+
+    private configureUpServer(): void {
         this.upServer.on('connection', (quoteAgent) => {
-            (<any>global).t.log('connection');
             quoteAgent.on('message', (message: string) => {
                 const data: MsgFromAgent = JSON.parse(message);
+
                 const marketName = _.toLower(
                     `${data.exchange}.${data.pair[0]}.${data.pair[1]}`);
                 if (!this.markets.has(marketName)) {
@@ -43,13 +67,14 @@ class QuoteCenter {
                     }));
                 }
                 const market = this.markets.get(marketName);
+
                 if (data.trades) market!.updateTrades(data.trades);
                 if (data.orderbook) market!.updateOrderbook(data.orderbook);
-                // (<any>global).t.log(data);
-                // (<any>global).t.log(marketName);
             });
         });
+    }
 
+    private configureDownServer(): void {
         this.downServer.use(async (ctx, next) => {
             ctx.marketName = _.toLower(`${ctx.query.exchange}.${ctx.query.pair}`);
             await next();
@@ -79,24 +104,6 @@ class QuoteCenter {
 
         this.downServer.use(router.routes());
         this.httpServer.on('request', this.downServer.callback());
-    }
-
-    start(/* stopping = () => { } */): Promise<void> {
-        // this.stopping = stopping;
-        // console.log('listening');
-        this.state = States.STARTED;
-        return new BPromise(resolve =>
-            void this.httpServer.listen(config.PORT, resolve)
-        );
-    }
-
-    stop(): void {
-        assert(this.state === States.STARTED);
-        this.state = States.STOPPING;
-        // console.log('stopping');
-        // this.stopping!();
-        this.httpServer.close();
-        this.markets.forEach(market => market.destructor());
     }
 }
 

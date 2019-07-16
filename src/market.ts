@@ -4,23 +4,32 @@ import { Polling } from 'pollerloop';
 import Queue from 'queue';
 import fse from 'fs-extra';
 import path from 'path';
+import assert from 'assert';
 import { Config, Trade, Orderbook } from './interfaces';
 
 const defaultConfig: Config = fse.readJsonSync(path.join(__dirname,
     '../cfg/config.json'));
 
+enum States {
+    RUNNING,
+    DESTRUCTED,
+}
+
 class Market {
+    private state = States.RUNNING;
     private config: Config;
     private trades = new Queue<Trade>();
     private orderbook: Orderbook = { asks: [], bids: [], };
     private cleaner: Pollerloop;
+
     constructor(
         private destructing: () => void = () => { },
         userConfig?: Config
     ) {
         this.config = { ...defaultConfig, ...userConfig };
+
         const polling: Polling = async (stopping, isRunning, delay) => {
-            for (; isRunning();) {
+            for (; ;) {
                 /**
                  * await delay 必须放循环前面，不然 market 构造析构就在同一个
                  * eventloop 了。
@@ -36,6 +45,7 @@ class Market {
             }
             stopping();
         }
+
         this.cleaner = new Pollerloop(polling);
         /**
          * 不需要 cb，因为 cleaner 根本不会自析构。
@@ -44,15 +54,19 @@ class Market {
     }
 
     destructor(): void {
+        assert(this.state === States.RUNNING);
+        this.state = States.DESTRUCTED;
         this.destructing();
         this.cleaner.stop();
     }
 
     getTrades(from = -Infinity): Trade[] {
+        assert(this.state === States.RUNNING);
         return this.trades.takeRearWhile(trade => trade.time >= from);
     }
 
     getOrderbook(depth = Infinity): Orderbook {
+        assert(this.state === States.RUNNING);
         return {
             bids: _.take(this.orderbook.bids, depth),
             asks: _.take(this.orderbook.asks, depth),
@@ -60,6 +74,7 @@ class Market {
     }
 
     updateTrades(newTrades: Trade[]): void {
+        assert(this.state === States.RUNNING);
         const latest = this.trades.length ? this.trades.rearElem.time : new Date(0);
         this.trades.push(...
             _.takeWhile(newTrades, trade => trade.time > latest).reverse()
@@ -67,6 +82,7 @@ class Market {
     }
 
     updateOrderbook(newOrderbook: Orderbook): void {
+        assert(this.state === States.RUNNING);
         this.orderbook = newOrderbook;
     }
 }
