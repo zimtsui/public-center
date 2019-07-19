@@ -11,7 +11,10 @@ import path from 'path';
 import Bluebird from 'bluebird';
 import _ from 'lodash';
 import WebSocket from 'ws';
-import { Config, MsgFromAgent, Orderbook, Trade, Order, Action } from '../../dist/interfaces';
+import {
+    Config, Orderbook, Trade, Order, Action,
+    QuoteDataFromAgentToCenter
+} from '../../dist/interfaces';
 import QuoteCenter from '../..';
 
 import EventEmitter from 'events';
@@ -61,8 +64,8 @@ async function randomTrades(): Promise<Trade[]> {
     return trades.reverse();
 }
 
-async function randomMessage(): Promise<MsgFromAgent> {
-    const message: MsgFromAgent = {
+async function randomMessage(): Promise<QuoteDataFromAgentToCenter> {
+    const message: QuoteDataFromAgentToCenter = {
         exchange: 'bitmex',
         pair: ['btc', 'usd'],
     };
@@ -128,7 +131,7 @@ test.serial('upload', async t => {
     await quoteCenter.stop();
 });
 
-test.serial('download', async t => {
+test.serial.only('download', async t => {
     (<any>global).t = t;
     const quoteCenter = new QuoteCenter();
     await quoteCenter.start();
@@ -164,7 +167,7 @@ test.serial('download', async t => {
     await quoteCenter.stop();
 });
 
-test.serial.only('cleaner', async t => {
+test.serial('cleaner', async t => {
     (<any>global).t = t;
     const quoteCenter = new QuoteCenter();
     await quoteCenter.start();

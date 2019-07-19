@@ -3,7 +3,7 @@ import {
     Trade,
     Order,
     Orderbook,
-    MsgFromAgent,
+    QuoteDataFromAgentToCenter,
 } from 'interfaces';
 
 interface Config {
@@ -18,5 +18,5 @@ export {
     Trade,
     Order,
     Orderbook,
-    MsgFromAgent,
+    QuoteDataFromAgentToCenter,
 };

@@ -8,7 +8,7 @@ import assert from 'assert';
 import Koa from 'koa';
 import Router from 'koa-router';
 import Market from './market';
-import { MsgFromAgent, Config } from './interfaces';
+import { QuoteDataFromAgentToCenter, Config } from './interfaces';
 
 const config: Config = fse.readJsonSync(path.join(__dirname,
     '../cfg/config.json'));
@@ -57,7 +57,7 @@ class QuoteCenter {
     private configureUpServer(): void {
         this.upServer.on('connection', (quoteAgent) => {
             quoteAgent.on('message', (message: string) => {
-                const data: MsgFromAgent = JSON.parse(message);
+                const data: QuoteDataFromAgentToCenter = JSON.parse(message);
 
                 const marketName = _.toLower(
                     `${data.exchange}.${data.pair[0]}.${data.pair[1]}`);
