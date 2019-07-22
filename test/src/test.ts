@@ -131,7 +131,7 @@ test.serial('upload', async t => {
     await quoteCenter.stop();
 });
 
-test.serial.only('download', async t => {
+test.serial('download', async t => {
     (<any>global).t = t;
     const quoteCenter = new QuoteCenter();
     await quoteCenter.start();

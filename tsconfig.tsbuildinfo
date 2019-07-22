@@ -450,8 +450,32 @@
         "signature": "364cce22728df37f0d900773912e214edb5837e5d37706ec30c93658db6b3e81"
       },
       "/home/zim/bithub/quote-center/src/index.ts": {
-        "version": "6cdd024b5086d5da2c7c75cdc29965dac3c2c57291cdc3c8737e2d04d37e94c2",
-        "signature": "c74c0003107284aeba54483105c6263b3882f807233f1dd9dc111e01f0d0bdf6"
+        "version": "1385e9d27a114036174d9f01dd3b740ef31b919a2195f000b441c59851f6005e",
+        "signature": "4c3292e340935844ac92925bf308ede108d03d894e5057eefb81731f3216aea7"
+      },
+      "/home/zim/bithub/quote-center/node_modules/logform/index.d.ts": {
+        "version": "6dbcfbc6f4662840d93d1d9d7fb5cce1b1fa00f43caa595ffee1a70f1583a0b0",
+        "signature": "6dbcfbc6f4662840d93d1d9d7fb5cce1b1fa00f43caa595ffee1a70f1583a0b0"
+      },
+      "/home/zim/bithub/quote-center/node_modules/winston-transport/index.d.ts": {
+        "version": "d667ec244bc8f65d0ac176f7ea91ef9e2904e7aa10923fbbe843d19f1270593b",
+        "signature": "d667ec244bc8f65d0ac176f7ea91ef9e2904e7aa10923fbbe843d19f1270593b"
+      },
+      "/home/zim/bithub/quote-center/node_modules/winston/lib/winston/config/index.d.ts": {
+        "version": "e9c33c05be71c17c3b08988fe6755605632a09c5cdd267cede8de5558ec80027",
+        "signature": "e9c33c05be71c17c3b08988fe6755605632a09c5cdd267cede8de5558ec80027"
+      },
+      "/home/zim/bithub/quote-center/node_modules/winston/lib/winston/transports/index.d.ts": {
+        "version": "87ccbc897e31409ff604f0b0b0f7a29efa1e51f0858aaea9ec294deec863558c",
+        "signature": "87ccbc897e31409ff604f0b0b0f7a29efa1e51f0858aaea9ec294deec863558c"
+      },
+      "/home/zim/bithub/quote-center/node_modules/winston/index.d.ts": {
+        "version": "4bd85c7eeaceccc938121fcbd580883f6bb84d8326eb0db9c79a9961551a2bc5",
+        "signature": "4bd85c7eeaceccc938121fcbd580883f6bb84d8326eb0db9c79a9961551a2bc5"
+      },
+      "/home/zim/bithub/quote-center/src/logger.ts": {
+        "version": "f011a3bc97bb5259e6070dfc4e2ee0c9387667f653b0ef2407b84484ef8db6cb",
+        "signature": "0367d7be744fca7a79c3c152b312f5df1a70e64394915ebf6190c0d94cdda813"
       },
       "/home/zim/bithub/quote-center/src/main.ts": {
         "version": "f787d86380ee56738a913941055cce2da4624e52b85a24453410059cff5dfc65",
@@ -1256,6 +1280,46 @@
         "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
         "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "/home/zim/bithub/quote-center/node_modules/logform/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/winston-transport/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/stream.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/logform/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/winston/lib/winston/config/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/winston/lib/winston/transports/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/http.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/winston-transport/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/winston/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/stream.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/logform/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/winston-transport/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/winston/lib/winston/config/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/winston/lib/winston/transports/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/src/logger.ts": [
+        "/home/zim/bithub/quote-center/node_modules/winston/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/path.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/process.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "/home/zim/bithub/quote-center/src/main.ts": [
         "/home/zim/bithub/quote-center/src/index.ts",
         "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
@@ -2043,6 +2107,42 @@
         "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/index.d.ts",
         "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
         "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/logform/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/winston/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/stream.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/logform/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/winston-transport/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/winston/lib/winston/config/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/winston/lib/winston/transports/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/src/logger.ts": [
+        "/home/zim/bithub/quote-center/node_modules/winston/index.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/winston-transport/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/stream.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/logform/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/winston/lib/winston/transports/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/http.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/winston-transport/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/home/zim/bithub/quote-center/node_modules/winston/lib/winston/config/index.d.ts": [
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/index.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-center/node_modules/@types/node/ts3.2/util.d.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
@@ -2158,13 +2258,19 @@
       "/home/zim/bithub/quote-center/node_modules/interfaces/dist/index.d.ts",
       "/home/zim/bithub/quote-center/src/interfaces.ts",
       "/home/zim/bithub/quote-center/src/market.ts",
-      "/home/zim/bithub/quote-center/src/index.ts",
-      "/home/zim/bithub/quote-center/src/main.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/chai/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/chai-as-promised/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/chance/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/minimatch/index.d.ts",
-      "/home/zim/bithub/quote-center/node_modules/@types/glob/index.d.ts"
+      "/home/zim/bithub/quote-center/node_modules/@types/glob/index.d.ts",
+      "/home/zim/bithub/quote-center/src/index.ts",
+      "/home/zim/bithub/quote-center/node_modules/logform/index.d.ts",
+      "/home/zim/bithub/quote-center/node_modules/winston-transport/index.d.ts",
+      "/home/zim/bithub/quote-center/node_modules/winston/lib/winston/config/index.d.ts",
+      "/home/zim/bithub/quote-center/node_modules/winston/lib/winston/transports/index.d.ts",
+      "/home/zim/bithub/quote-center/node_modules/winston/index.d.ts",
+      "/home/zim/bithub/quote-center/src/logger.ts",
+      "/home/zim/bithub/quote-center/src/main.ts"
     ]
   },
   "version": "3.5.3"

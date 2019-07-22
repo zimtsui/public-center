@@ -1,4 +1,7 @@
 "use strict";
+/**
+ * unreusable
+ */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -25,8 +28,10 @@ const config = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '.
 var States;
 (function (States) {
     States[States["CONSTRUCTED"] = 0] = "CONSTRUCTED";
-    States[States["STARTED"] = 1] = "STARTED";
-    States[States["STOPPING"] = 2] = "STOPPING";
+    States[States["STARTING"] = 1] = "STARTING";
+    States[States["STARTED"] = 2] = "STARTED";
+    States[States["STOPPING"] = 3] = "STOPPING";
+    States[States["STOPPED"] = 4] = "STOPPED";
 })(States || (States = {}));
 class QuoteCenter {
     constructor() {
@@ -40,12 +45,29 @@ class QuoteCenter {
         this.configureUpServer();
     }
     start() {
+        this.started = this._start()
+            .catch(err => {
+            this.stop();
+            throw err;
+        });
+        return this.started;
+    }
+    _start() {
         assert_1.default(this.state === States.CONSTRUCTED);
         this.state = States.STARTED;
         return new bluebird_1.default(resolve => void this.httpServer.listen(config.PORT, resolve));
     }
     stop() {
-        assert_1.default(this.state === States.STARTED);
+        if (this.state === States.STOPPING)
+            return this.stopped;
+        if (this.state === States.STARTING)
+            return this.started
+                .then(() => void this.stop())
+                .catch(() => void this.stop());
+        this.stopped = this._stop();
+        return this.stopped;
+    }
+    _stop() {
         this.state = States.STOPPING;
         this.markets.forEach(market => market.destructor());
         return new Promise((resolve, reject) => void this.httpServer.close(err => {

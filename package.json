@@ -47,6 +47,7 @@
         "pollerloop": "git+https://github.com/zimtsui/pollerloop.git",
         "queue": "git+https://github.com/zimtsui/queue.git",
         "source-map-support": "^0.5.12",
+        "winston": "^3.2.1",
         "ws": "^7.1.0"
     },
     "ava": {

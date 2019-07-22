@@ -128,7 +128,7 @@ ava_1.default.serial('upload', (t) => __awaiter(this, void 0, void 0, function* 
     yield new Promise(resolve => void uploader.on('close', resolve));
     yield quoteCenter.stop();
 }));
-ava_1.default.serial.only('download', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default.serial('download', (t) => __awaiter(this, void 0, void 0, function* () {
     global.t = t;
     const quoteCenter = new __1.default();
     yield quoteCenter.start();

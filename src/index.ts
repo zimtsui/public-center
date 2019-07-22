@@ -1,3 +1,7 @@
+/**
+ * unreusable
+ */
+
 import Bluebird from 'bluebird';
 import fse from 'fs-extra';
 import WebSocket from 'ws';
@@ -15,8 +19,10 @@ const config: Config = fse.readJsonSync(path.join(__dirname,
 
 enum States {
     CONSTRUCTED,
+    STARTING,
     STARTED,
     STOPPING,
+    STOPPED,
 }
 
 class QuoteCenter {
@@ -32,7 +38,17 @@ class QuoteCenter {
         this.configureUpServer();
     }
 
+    private started: Promise<void> | undefined;
     start(): Promise<void> {
+        this.started = this._start()
+            .catch(err => {
+                this.stop();
+                throw err;
+            });
+        return this.started;
+    }
+
+    private _start(): Promise<void> {
         assert(this.state === States.CONSTRUCTED);
         this.state = States.STARTED;
         return new Bluebird(resolve =>
@@ -40,8 +56,20 @@ class QuoteCenter {
         );
     }
 
+    private stopped: Promise<void> | undefined;
     stop(): Promise<void> {
-        assert(this.state === States.STARTED);
+        if (this.state === States.STOPPING)
+            return this.stopped!;
+        if (this.state === States.STARTING)
+            return this.started!
+                .then(() => void this.stop())
+                .catch(() => void this.stop());
+
+        this.stopped = this._stop();
+        return this.stopped;
+    }
+
+    private _stop(): Promise<void> {
         this.state = States.STOPPING;
         this.markets.forEach(market => market.destructor());
         return new Promise((resolve, reject) => void this.httpServer.close(err => {

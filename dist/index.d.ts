@@ -1,3 +1,6 @@
+/**
+ * unreusable
+ */
 declare class QuoteCenter {
     private state;
     private httpServer;
@@ -5,8 +8,12 @@ declare class QuoteCenter {
     private downServer;
     private markets;
     constructor();
+    private started;
     start(): Promise<void>;
+    private _start;
+    private stopped;
     stop(): Promise<void>;
+    private _stop;
     private configureHttpServer;
     private configureUpServer;
     private configureDownServer;
