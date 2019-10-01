@@ -1,81 +1,25 @@
-/**
- * unreusable
- */
-
-import Bluebird from 'bluebird';
-import fse from 'fs-extra';
+import Autonomous from 'autonomous';
 import WebSocket from 'ws';
 import http from 'http';
-import path from 'path';
-import _ from 'lodash';
-import assert from 'assert';
+import Market from './market';
 import Koa from 'koa';
 import Router from 'koa-router';
-import Market from './market';
-import { QuoteDataFromAgentToCenter, Config } from './interfaces';
+import fse from 'fs-extra';
+import path from 'path';
+import _ from 'lodash';
+import {
+    QuoteDataFromAgentToCenter as QDFATC,
+    Config,
+} from './interfaces';
 
 const config: Config = fse.readJsonSync(path.join(__dirname,
     '../cfg/config.json'));
 
-enum States {
-    CONSTRUCTED,
-    STARTING,
-    STARTED,
-    STOPPING,
-    STOPPED,
-}
-
-class QuoteCenter {
-    private state = States.CONSTRUCTED;
+class QuoteCenter extends Autonomous {
     private httpServer = http.createServer();
     private upServer = new WebSocket.Server({ server: this.httpServer });
     private downServer = new Koa();
     private markets = new Map<string, Market>();
-
-    constructor() {
-        this.configureHttpServer();
-        this.configureDownServer();
-        this.configureUpServer();
-    }
-
-    private started: Promise<void> | undefined;
-    start(): Promise<void> {
-        this.started = this._start()
-            .catch(err => {
-                this.stop();
-                throw err;
-            });
-        return this.started;
-    }
-
-    private _start(): Promise<void> {
-        assert(this.state === States.CONSTRUCTED);
-        this.state = States.STARTED;
-        return new Bluebird(resolve =>
-            void this.httpServer.listen(config.PORT, resolve)
-        );
-    }
-
-    private stopped: Promise<void> | undefined;
-    stop(): Promise<void> {
-        if (this.state === States.STOPPING)
-            return this.stopped!;
-        if (this.state === States.STARTING)
-            return this.started!
-                .then(() => void this.stop())
-                .catch(() => void this.stop());
-
-        this.stopped = this._stop();
-        return this.stopped;
-    }
-
-    private _stop(): Promise<void> {
-        this.state = States.STOPPING;
-        this.markets.forEach(market => market.destructor());
-        return new Promise((resolve, reject) => void this.httpServer.close(err => {
-            if (err) reject(err); else resolve();
-        }));
-    }
 
     private configureHttpServer(): void {
         this.httpServer.timeout = 0;
@@ -85,7 +29,7 @@ class QuoteCenter {
     private configureUpServer(): void {
         this.upServer.on('connection', (quoteAgent) => {
             quoteAgent.on('message', (message: string) => {
-                const data: QuoteDataFromAgentToCenter = JSON.parse(message);
+                const data: QDFATC = JSON.parse(message);
 
                 const marketName = _.toLower(
                     `${data.exchange}.${data.pair[0]}.${data.pair[1]}`);
@@ -132,6 +76,27 @@ class QuoteCenter {
 
         this.downServer.use(router.routes());
         this.httpServer.on('request', this.downServer.callback());
+    }
+
+    constructor() {
+        super();
+        this.configureHttpServer();
+        this.configureDownServer();
+        this.configureUpServer();
+    }
+
+    protected _start() {
+        return new Promise<void>(resolve =>
+            void this.httpServer.listen(config.PORT, resolve)
+        );
+    }
+
+    protected _stop() {
+        this.markets.forEach(market => market.destructor());
+        return new Promise<void>((resolve, reject) =>
+            void this.httpServer.close(err => {
+                if (err) reject(err); else resolve();
+            }));
     }
 }
 

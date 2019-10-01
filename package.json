@@ -38,6 +38,7 @@
         "@types/lodash": "^4.14.136",
         "@types/node": "^12.6.8",
         "@types/ws": "^6.0.1",
+        "autonomous": "git+https://github.com/zimtsui/autonomous.git",
         "bluebird": "^3.5.5",
         "fs-extra": "^8.1.0",
         "interfaces": "git+https://github.com/zimtsui/interfaces.git",
