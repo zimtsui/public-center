@@ -7,8 +7,7 @@
     "private": true,
     "scripts": {
         "test": "tsc -b ./test/ && ava",
-        "build": "tsc -b",
-        "start": "node -r source-map-support ./dist/main"
+        "build": "tsc -b"
     },
     "repository": {
         "type": "git",
@@ -39,7 +38,6 @@
         "@types/node": "^12.6.8",
         "@types/ws": "^6.0.1",
         "autonomous": "git+https://github.com/zimtsui/autonomous.git",
-        "bluebird": "^3.5.5",
         "fs-extra": "^8.1.0",
         "interfaces": "git+https://github.com/zimtsui/interfaces.git",
         "koa": "^2.7.0",
@@ -47,8 +45,6 @@
         "lodash": "^4.17.15",
         "pollerloop": "git+https://github.com/zimtsui/pollerloop.git",
         "queue": "git+https://github.com/zimtsui/queue.git",
-        "source-map-support": "^0.5.12",
-        "winston": "^3.2.1",
         "ws": "^7.1.0"
     },
     "ava": {

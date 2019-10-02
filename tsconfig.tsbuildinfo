@@ -130,8 +130,8 @@
         "signature": "63b66918290d794f73832a6d0325be5026236674fe8c0cb0b68d162000d7bbe8"
       },
       "/home/zim/bithub/quote-center/node_modules/autonomous/dist/index.d.ts": {
-        "version": "eca05e7064f6ee2dd974dd53e3ef508ada76029dca6ac3f3beb48a08d44b4273",
-        "signature": "eca05e7064f6ee2dd974dd53e3ef508ada76029dca6ac3f3beb48a08d44b4273"
+        "version": "38aa01cd11a854f749357868fd010255555588552d0295bb2836d4c088667782",
+        "signature": "38aa01cd11a854f749357868fd010255555588552d0295bb2836d4c088667782"
       },
       "/home/zim/bithub/quote-center/node_modules/@types/node/globals.d.ts": {
         "version": "e4461b72726848da76a31153b6b01af5e0be3b08dbfa2ec5741ad302eb20f2ed",
@@ -2083,7 +2083,6 @@
       "/home/zim/bithub/quote-center/node_modules/typescript/lib/lib.es2019.symbol.d.ts",
       "/home/zim/bithub/quote-center/node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "/home/zim/bithub/quote-center/node_modules/typescript/lib/lib.esnext.bigint.d.ts",
-      "/home/zim/bithub/quote-center/node_modules/autonomous/dist/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/node/globals.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/node/assert.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/node/async_hooks.d.ts",
@@ -2169,6 +2168,7 @@
       "/home/zim/bithub/quote-center/node_modules/@types/chance/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/minimatch/index.d.ts",
       "/home/zim/bithub/quote-center/node_modules/@types/glob/index.d.ts",
+      "/home/zim/bithub/quote-center/node_modules/autonomous/dist/index.d.ts",
       "/home/zim/bithub/quote-center/src/index.ts"
     ]
   },
