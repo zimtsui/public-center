@@ -1,4 +1,7 @@
 "use strict";
+/**
+ * 之所以用 id 来排序是因为有的交易所会出现多个订单时间相同的情况。
+ */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -58,11 +61,11 @@ class Market {
         this.destructing();
         this.cleaner.stop();
     }
-    getTrades(from = -Infinity) {
+    getTrades(from = Number.NEGATIVE_INFINITY) {
         assert_1.default(this.state === States.RUNNING);
-        return this.trades.takeRearWhile(trade => trade.time > from);
+        return this.trades.takeRearWhile(trade => trade.id > from);
     }
-    getOrderbook(depth = Infinity) {
+    getOrderbook(depth = Number.POSITIVE_INFINITY) {
         assert_1.default(this.state === States.RUNNING);
         return {
             bids: lodash_1.default.take(this.orderbook.bids, depth),
@@ -71,8 +74,10 @@ class Market {
     }
     updateTrades(newTrades) {
         assert_1.default(this.state === States.RUNNING);
-        const latest = this.trades.length ? this.trades.rearElem.time : new Date(0);
-        this.trades.push(...lodash_1.default.takeRightWhile(newTrades, trade => trade.time > latest));
+        const latest = this.trades.length
+            ? this.trades.rearElem.id
+            : Number.NEGATIVE_INFINITY;
+        this.trades.push(...lodash_1.default.takeRightWhile(newTrades, trade => trade.id > latest));
     }
     updateOrderbook(newOrderbook) {
         assert_1.default(this.state === States.RUNNING);

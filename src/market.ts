@@ -1,3 +1,8 @@
+/**
+ * 之所以用 id 来排序是因为有的交易所会出现多个订单时间相同的情况。
+ */
+
+
 import _ from 'lodash';
 import Pollerloop from 'pollerloop';
 import { Polling } from 'pollerloop';
@@ -60,12 +65,12 @@ class Market {
         this.cleaner.stop();
     }
 
-    getTrades(from = -Infinity): Trade[] {
+    getTrades(from = Number.NEGATIVE_INFINITY): Trade[] {
         assert(this.state === States.RUNNING);
-        return this.trades.takeRearWhile(trade => trade.time > from);
+        return this.trades.takeRearWhile(trade => trade.id > from);
     }
 
-    getOrderbook(depth = Infinity): Orderbook {
+    getOrderbook(depth = Number.POSITIVE_INFINITY): Orderbook {
         assert(this.state === States.RUNNING);
         return {
             bids: _.take(this.orderbook.bids, depth),
@@ -75,9 +80,11 @@ class Market {
 
     updateTrades(newTrades: Trade[]): void {
         assert(this.state === States.RUNNING);
-        const latest = this.trades.length ? this.trades.rearElem.time : new Date(0);
+        const latest = this.trades.length
+            ? this.trades.rearElem.id
+            : Number.NEGATIVE_INFINITY;
         this.trades.push(...
-            _.takeRightWhile(newTrades, trade => trade.time > latest)
+            _.takeRightWhile(newTrades, trade => trade.id > latest)
         );
     }
 

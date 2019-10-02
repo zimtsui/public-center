@@ -394,8 +394,8 @@
         "signature": "921fa357c1abb093efccc6b93bf2ffbd47549c763cba03446caff4c47d9d41e6"
       },
       "./src/market.ts": {
-        "version": "4b1ac7f9526f3f56b9feb0c1795245f97c35e19ad45b056f742f7ba41a4708a9",
-        "signature": "364cce22728df37f0d900773912e214edb5837e5d37706ec30c93658db6b3e81"
+        "version": "f73449d784757bf7489ddc8f41e7076b1df07129d3f99e3bd0402dec76d44505",
+        "signature": "67d0aeb9c7a692d701f2255cd73166adff8e5141032d19a611fbb3f25924f2d0"
       },
       "./node_modules/@types/accepts/index.d.ts": {
         "version": "6738101ae8e56cd3879ab3f99630ada7d78097fc9fd334df7e766216778ca219",
@@ -2163,7 +2163,6 @@
       "./node_modules/@types/fs-extra/index.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
       "./src/interfaces.ts",
-      "./src/market.ts",
       "./node_modules/@types/accepts/index.d.ts",
       "./node_modules/@types/keygrip/index.d.ts",
       "./node_modules/@types/range-parser/index.d.ts",
@@ -2184,6 +2183,7 @@
       "./node_modules/@types/chance/index.d.ts",
       "./node_modules/@types/minimatch/index.d.ts",
       "./node_modules/@types/glob/index.d.ts",
+      "./src/market.ts",
       "./src/index.ts"
     ]
   },
