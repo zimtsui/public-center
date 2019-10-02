@@ -41,9 +41,11 @@ function randomOrder(): Order {
 }
 
 function randomTrade(): Trade {
+    const now = Date.now();
     return {
         ...randomOrder(),
-        time: Date.now(),
+        time: now,
+        id: now,
     }
 }
 
@@ -61,7 +63,7 @@ async function randomTrades(): Promise<Trade[]> {
         trades.push(randomTrade());
         await Bluebird.delay(1);
     }
-    return trades.reverse();
+    return trades;
 }
 
 async function randomMessage(): Promise<QuoteDataFromAgentToCenter> {
@@ -149,19 +151,19 @@ test.serial('download', async t => {
 
     const orderbook = await axios.get(
         `http://localhost:${config.PORT}/orderbook`, {
-            params: {
-                exchange: 'bitmex',
-                pair: 'btc.usd',
-            }
-        });
+        params: {
+            exchange: 'bitmex',
+            pair: 'btc.usd',
+        }
+    });
     t.log(orderbook.data);
     const trades = await axios.get(
         `http://localhost:${config.PORT}/trades`, {
-            params: {
-                exchange: 'bitmex',
-                pair: 'btc.usd',
-            }
-        });
+        params: {
+            exchange: 'bitmex',
+            pair: 'btc.usd',
+        }
+    });
     t.log(trades.data);
 
     await quoteCenter.stop();
@@ -186,22 +188,22 @@ test.serial('cleaner', async t => {
 
     await axios.get(
         `http://localhost:${config.PORT}/trades`, {
-            params: {
-                exchange: 'bitmex',
-                pair: 'btc.usd',
-            }
-        }).then(res => res.data)
+        params: {
+            exchange: 'bitmex',
+            pair: 'btc.usd',
+        }
+    }).then(res => res.data)
         .then(data => t.log(data));
 
     await Bluebird.delay(6000);
 
     await axios.get(
         `http://localhost:${config.PORT}/trades`, {
-            params: {
-                exchange: 'bitmex',
-                pair: 'btc.usd',
-            }
-        }).then(res => res.data)
+        params: {
+            exchange: 'bitmex',
+            pair: 'btc.usd',
+        }
+    }).then(res => res.data)
         .then(data => t.log(data));
 
     await quoteCenter.stop();

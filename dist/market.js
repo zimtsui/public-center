@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -29,7 +30,7 @@ class Market {
         this.state = States.RUNNING;
         this.trades = new queue_1.default();
         this.orderbook = { asks: [], bids: [], };
-        this.config = Object.assign({}, defaultConfig, userConfig);
+        this.config = Object.assign(Object.assign({}, defaultConfig), userConfig);
         const polling = (stopping, isRunning, delay) => __awaiter(this, void 0, void 0, function* () {
             for (;;) {
                 /**
@@ -59,7 +60,7 @@ class Market {
     }
     getTrades(from = -Infinity) {
         assert_1.default(this.state === States.RUNNING);
-        return this.trades.takeRearWhile(trade => trade.time >= from);
+        return this.trades.takeRearWhile(trade => trade.time > from);
     }
     getOrderbook(depth = Infinity) {
         assert_1.default(this.state === States.RUNNING);
@@ -71,7 +72,7 @@ class Market {
     updateTrades(newTrades) {
         assert_1.default(this.state === States.RUNNING);
         const latest = this.trades.length ? this.trades.rearElem.time : new Date(0);
-        this.trades.push(...lodash_1.default.takeWhile(newTrades, trade => trade.time > latest).reverse());
+        this.trades.push(...lodash_1.default.takeRightWhile(newTrades, trade => trade.time > latest));
     }
     updateOrderbook(newOrderbook) {
         assert_1.default(this.state === States.RUNNING);

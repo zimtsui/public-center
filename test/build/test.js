@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -44,7 +45,8 @@ function randomOrder() {
     };
 }
 function randomTrade() {
-    return Object.assign({}, randomOrder(), { time: Date.now() });
+    const now = Date.now();
+    return Object.assign(Object.assign({}, randomOrder()), { time: now, id: now });
 }
 function randomOrderbook() {
     const orders = lodash_1.default.range(0, OrderNum).map(() => randomOrder());
@@ -60,7 +62,7 @@ function randomTrades() {
             trades.push(randomTrade());
             yield bluebird_1.default.delay(1);
         }
-        return trades.reverse();
+        return trades;
     });
 }
 function randomMessage() {
@@ -76,7 +78,7 @@ function randomMessage() {
         return message;
     });
 }
-ava_1.default.serial('start and stop', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default.serial('start and stop', (t) => __awaiter(void 0, void 0, void 0, function* () {
     const quoteCenter = new __1.default();
     t.log('starting');
     yield quoteCenter.start();
@@ -84,13 +86,13 @@ ava_1.default.serial('start and stop', (t) => __awaiter(this, void 0, void 0, fu
     t.log('stopping');
     yield quoteCenter.stop();
 }));
-ava_1.default.serial.skip('random', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default.serial.skip('random', (t) => __awaiter(void 0, void 0, void 0, function* () {
     t.log(randomOrder());
     t.log(randomTrade());
     t.log(randomOrderbook());
     t.log(yield randomTrades());
 }));
-ava_1.default.serial('connection', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default.serial('connection', (t) => __awaiter(void 0, void 0, void 0, function* () {
     global.t = t;
     const quoteCenter = new __1.default();
     t.log(1);
@@ -111,7 +113,7 @@ ava_1.default.serial('connection', (t) => __awaiter(this, void 0, void 0, functi
     t.log(5);
     yield bluebird_1.default.delay(500);
 }));
-ava_1.default.serial('upload', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default.serial('upload', (t) => __awaiter(void 0, void 0, void 0, function* () {
     global.t = t;
     const quoteCenter = new __1.default();
     yield quoteCenter.start();
@@ -128,7 +130,7 @@ ava_1.default.serial('upload', (t) => __awaiter(this, void 0, void 0, function* 
     yield new Promise(resolve => void uploader.on('close', resolve));
     yield quoteCenter.stop();
 }));
-ava_1.default.serial('download', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default.serial('download', (t) => __awaiter(void 0, void 0, void 0, function* () {
     global.t = t;
     const quoteCenter = new __1.default();
     yield quoteCenter.start();
@@ -158,7 +160,7 @@ ava_1.default.serial('download', (t) => __awaiter(this, void 0, void 0, function
     t.log(trades.data);
     yield quoteCenter.stop();
 }));
-ava_1.default.serial('cleaner', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default.serial('cleaner', (t) => __awaiter(void 0, void 0, void 0, function* () {
     global.t = t;
     const quoteCenter = new __1.default();
     yield quoteCenter.start();
