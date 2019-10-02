@@ -7,7 +7,10 @@
     "private": true,
     "scripts": {
         "test": "tsc -b ./test/ && ava",
-        "build": "tsc -b"
+        "build": "tsc -b",
+        "start": "pandora start --env=\"NODE_ENV=production\"",
+        "stop": "pandora stop",
+        "dev": "pandora dev"
     },
     "repository": {
         "type": "git",

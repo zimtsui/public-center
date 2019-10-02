@@ -3,7 +3,7 @@
 module.exports = (pandora) => {
 
     pandora
-        .fork('quote-center', './');
+        .service('quote-center', './');
 
     /**
      * you can also use cluster mode to start application
