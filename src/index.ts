@@ -60,6 +60,7 @@ class QuoteCenter extends Autonomous {
                 ctx.body = market.getTrades(ctx.query.from);
             } else {
                 ctx.status = 404;
+                ctx.body = null;
             }
             await next();
         });
@@ -70,6 +71,7 @@ class QuoteCenter extends Autonomous {
                 ctx.body = market.getOrderbook(ctx.query.depth);
             } else {
                 ctx.status = 404;
+                ctx.body = null;
             }
             await next();
         });

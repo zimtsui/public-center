@@ -69,6 +69,7 @@ class QuoteCenter extends autonomous_1.default {
             }
             else {
                 ctx.status = 404;
+                ctx.body = null;
             }
             yield next();
         }));
@@ -80,6 +81,7 @@ class QuoteCenter extends autonomous_1.default {
             }
             else {
                 ctx.status = 404;
+                ctx.body = null;
             }
             yield next();
         }));
