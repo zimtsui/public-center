@@ -63,7 +63,7 @@ class Market {
     }
     getTrades(from = Number.NEGATIVE_INFINITY) {
         assert_1.default(this.state === States.RUNNING);
-        return this.trades.takeRearWhile(trade => trade.id > from);
+        return lodash_1.default.takeRightWhile(this.trades, trade => trade.id > from);
     }
     getOrderbook(depth = Number.POSITIVE_INFINITY) {
         assert_1.default(this.state === States.RUNNING);
@@ -75,7 +75,7 @@ class Market {
     updateTrades(newTrades) {
         assert_1.default(this.state === States.RUNNING);
         const latest = this.trades.length
-            ? this.trades.rearElem.id
+            ? this.trades[-1].id
             : Number.NEGATIVE_INFINITY;
         this.trades.push(...lodash_1.default.takeRightWhile(newTrades, trade => trade.id > latest));
     }

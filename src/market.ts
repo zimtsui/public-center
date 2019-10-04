@@ -67,7 +67,7 @@ class Market {
 
     getTrades(from = Number.NEGATIVE_INFINITY): Trade[] {
         assert(this.state === States.RUNNING);
-        return this.trades.takeRearWhile(trade => trade.id > from);
+        return _.takeRightWhile(this.trades, trade => trade.id > from);
     }
 
     getOrderbook(depth = Number.POSITIVE_INFINITY): Orderbook {
@@ -81,7 +81,7 @@ class Market {
     updateTrades(newTrades: Trade[]): void {
         assert(this.state === States.RUNNING);
         const latest = this.trades.length
-            ? this.trades.rearElem.id
+            ? this.trades[-1].id
             : Number.NEGATIVE_INFINITY;
         this.trades.push(...
             _.takeRightWhile(newTrades, trade => trade.id > latest)
