@@ -17,7 +17,7 @@ import {
 } from '../../dist/interfaces';
 import QuoteCenter from '../..';
 
-import EventEmitter from 'events';
+import { once } from 'events';
 
 const config: Config = fse.readJsonSync(path.join(__dirname,
     '../../cfg/config.json'));
@@ -92,25 +92,20 @@ test.serial.skip('random', async t => {
     t.log(await randomTrades());
 });
 
-test.serial.only('connection', async t => {
+test.serial('connection', async t => {
     (<any>global).t = t;
     const quoteCenter = new QuoteCenter();
     t.log(1);
     await quoteCenter.start();
     const uploader = new WebSocket(
-        `ws://localhost:${config.PORT}/bitmex/btc.usdt/trades`);
-    uploader.on('error', err => {
-        t.log(err);
-        t.fail();
-    });
+        `ws://localhost:${config.PORT}/bitmex/btc.usdt`);
     t.log(2);
-    await new Promise(resolve => void uploader.on('open', resolve));
-    // return;
+    await once(uploader, 'open');
     t.log(3);
     await Bluebird.delay(500);
     uploader.close();
     t.log(4);
-    await new Promise(resolve => void uploader.on('close', resolve));
+    await once(uploader, 'close');
     await quoteCenter.stop();
     t.log(5);
     await Bluebird.delay(500);
@@ -122,17 +117,13 @@ test.serial('upload', async t => {
     await quoteCenter.start();
     const uploader = new WebSocket(
         `ws://localhost:${config.PORT}/bitmex/btc.usdt`);
-    uploader.on('error', err => {
-        t.log(err);
-        t.fail();
-    });
-    await new Promise(resolve => void uploader.on('open', resolve));
+    await once(uploader, 'open');
     await Bluebird.delay(500);
 
     uploader.send(JSON.stringify(await randomMessage()));
     await Bluebird.delay(1000);
     uploader.close();
-    await new Promise(resolve => void uploader.on('close', resolve));
+    await once(uploader, 'close');
     await quoteCenter.stop();
 });
 
@@ -142,16 +133,12 @@ test.serial('download', async t => {
     await quoteCenter.start();
     const uploader = new WebSocket(
         `ws://localhost:${config.PORT}/bitmex/btc.usdt`);
-    uploader.on('error', err => {
-        t.log(err);
-        t.fail();
-    });
-    await new Promise(resolve => void uploader.on('open', resolve));
+    await once(uploader, 'open');
 
     uploader.send(JSON.stringify(await randomMessage()));
     await Bluebird.delay(1000);
     uploader.close();
-    await new Promise(resolve => void uploader.on('close', resolve));
+    await once(uploader, 'close');
 
     const orderbook = await axios.get(
         `http://localhost:${config.PORT}/bitmex/btc.usdt/orderbook`);
@@ -167,18 +154,15 @@ test.serial('cleaner', async t => {
     (<any>global).t = t;
     const quoteCenter = new QuoteCenter();
     await quoteCenter.start();
-    const uploader = new WebSocket(`ws://localhost:${config.PORT}`);
-    uploader.on('error', err => {
-        t.log(err);
-        t.fail();
-    });
-    await new Promise(resolve => void uploader.on('open', resolve));
+    const uploader = new WebSocket(
+        `ws://localhost:${config.PORT}/bitmex/btc.usdt`);
+    await once(uploader, 'open');
 
     uploader.send(JSON.stringify(await randomMessage()));
     await Bluebird.delay(5000);
     uploader.send(JSON.stringify(await randomMessage()));
     uploader.close();
-    await new Promise(resolve => void uploader.on('close', resolve));
+    await once(uploader, 'close');
 
     await axios.get(
         `http://localhost:${config.PORT}/bitmex/btc.usdt/trades`)

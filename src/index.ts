@@ -24,11 +24,11 @@ class QuoteCenter extends Autonomous {
 
     constructor() {
         super();
-        // this.configureHttpDownload();
-        // this.configureUpload();
-        // this.configureHttpServer();
-        // this.koa.use(this.filter.filter());
-        // this.httpServer.on('request', this.koa.callback());
+        this.configureHttpDownload();
+        this.configureUpload();
+        this.configureHttpServer();
+        this.koa.use(this.filter.filter());
+        this.httpServer.on('request', this.koa.callback());
     }
     //@ts-ignore
     private configureUpload(): void {
@@ -75,7 +75,7 @@ class QuoteCenter extends Autonomous {
             await next();
         });
 
-        router.get('/orderbook', async (ctx, next) => {
+        router.get('/:exchange/:pair/orderbook', async (ctx, next) => {
             ctx.state.marketName = _.toLower(
                 `${ctx.params.exchange}/${ctx.params.pair}`);
             const market = this.markets.get(ctx.state.marketName);
@@ -98,11 +98,9 @@ class QuoteCenter extends Autonomous {
     }
 
     protected _start() {
-        this.koa.listen(config.PORT);
-        return Promise.resolve();
-        // return new Promise<void>(resolve =>
-        //     void this.httpServer.listen(config.PORT, resolve)
-        // );
+        return new Promise<void>(resolve =>
+            void this.httpServer.listen(config.PORT, resolve)
+        );
     }
 
     protected _stop() {
