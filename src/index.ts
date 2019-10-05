@@ -1,5 +1,5 @@
 import Autonomous from 'autonomous';
-import WebSocket from 'ws';
+// import WebSocket from 'ws';
 import http from 'http';
 import Market from './market';
 import Koa from 'koa';
@@ -7,6 +7,7 @@ import Router from 'koa-router';
 import fse from 'fs-extra';
 import path from 'path';
 import _ from 'lodash';
+import Filter from 'koa-ws-filter';
 import {
     QuoteDataFromAgentToCenter as QDFATC,
     Config,
@@ -17,22 +18,28 @@ const config: Config = fse.readJsonSync(path.join(__dirname,
 
 class QuoteCenter extends Autonomous {
     private httpServer = http.createServer();
-    private upServer = new WebSocket.Server({ server: this.httpServer });
-    private downServer = new Koa();
+    private filter = new Filter();
+    private koa = new Koa();
     private markets = new Map<string, Market>();
 
-    private configureHttpServer(): void {
-        this.httpServer.timeout = 0;
-        this.httpServer.keepAliveTimeout = 0;
+    constructor() {
+        super();
+        // this.configureHttpDownload();
+        // this.configureUpload();
+        // this.configureHttpServer();
+        // this.koa.use(this.filter.filter());
+        // this.httpServer.on('request', this.koa.callback());
     }
-
-    private configureUpServer(): void {
-        this.upServer.on('connection', (quoteAgent) => {
+    //@ts-ignore
+    private configureUpload(): void {
+        const router = new Router();
+        router.all('/:exchange/:pair/', async (ctx, next) => {
+            const quoteAgent = await ctx.upgrade();
             quoteAgent.on('message', (message: string) => {
                 const data: QDFATC = JSON.parse(message);
 
                 const marketName = _.toLower(
-                    `${data.exchange}.${data.pair[0]}.${data.pair[1]}`);
+                    `${ctx.params.exchange}/${ctx.params.pair}`);
                 if (!this.markets.has(marketName)) {
                     this.markets.set(marketName, new Market(() => {
                         this.markets.delete(marketName);
@@ -44,17 +51,20 @@ class QuoteCenter extends Autonomous {
                 if (data.orderbook) market!.updateOrderbook(data.orderbook);
             });
         });
+        this.filter.ws(router.routes());
     }
-
-    private configureDownServer(): void {
-        this.downServer.use(async (ctx, next) => {
-            ctx.marketName = _.toLower(`${ctx.query.exchange}.${ctx.query.pair}`);
-            await next();
-        });
-
+    //@ts-ignore
+    private configureHttpDownload(): void {
         const router = new Router();
-        router.get('/trades', async (ctx, next) => {
-            const market = this.markets.get(ctx.marketName);
+        // router.all('', async (ctx, next) => {
+        //     ctx.state.marketName = 
+        //     await next();
+        // });
+
+        router.get('/:exchange/:pair/trades', async (ctx, next) => {
+            ctx.state.marketName = _.toLower(
+                `${ctx.params.exchange}/${ctx.params.pair}`);
+            const market = this.markets.get(ctx.state.marketName);
             if (market) {
                 ctx.status = 200;
                 ctx.body = market.getTrades(ctx.query.from);
@@ -64,8 +74,11 @@ class QuoteCenter extends Autonomous {
             }
             await next();
         });
+
         router.get('/orderbook', async (ctx, next) => {
-            const market = this.markets.get(ctx.marketName);
+            ctx.state.marketName = _.toLower(
+                `${ctx.params.exchange}/${ctx.params.pair}`);
+            const market = this.markets.get(ctx.state.marketName);
             if (market) {
                 ctx.status = 200;
                 ctx.body = market.getOrderbook(ctx.query.depth);
@@ -76,21 +89,20 @@ class QuoteCenter extends Autonomous {
             await next();
         });
 
-        this.downServer.use(router.routes());
-        this.httpServer.on('request', this.downServer.callback());
+        this.filter.http(router.routes());
     }
-
-    constructor() {
-        super();
-        this.configureHttpServer();
-        this.configureDownServer();
-        this.configureUpServer();
+    //@ts-ignore
+    private configureHttpServer(): void {
+        this.httpServer.timeout = 0;
+        this.httpServer.keepAliveTimeout = 0;
     }
 
     protected _start() {
-        return new Promise<void>(resolve =>
-            void this.httpServer.listen(config.PORT, resolve)
-        );
+        this.koa.listen(config.PORT);
+        return Promise.resolve();
+        // return new Promise<void>(resolve =>
+        //     void this.httpServer.listen(config.PORT, resolve)
+        // );
     }
 
     protected _stop() {

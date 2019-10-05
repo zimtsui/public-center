@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const autonomous_1 = __importDefault(require("autonomous"));
-const ws_1 = __importDefault(require("ws"));
+// import WebSocket from 'ws';
 const http_1 = __importDefault(require("http"));
 const market_1 = __importDefault(require("./market"));
 const koa_1 = __importDefault(require("koa"));
@@ -21,27 +21,29 @@ const koa_router_1 = __importDefault(require("koa-router"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const path_1 = __importDefault(require("path"));
 const lodash_1 = __importDefault(require("lodash"));
+const koa_ws_filter_1 = __importDefault(require("koa-ws-filter"));
 const config = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
 class QuoteCenter extends autonomous_1.default {
     constructor() {
         super();
         this.httpServer = http_1.default.createServer();
-        this.upServer = new ws_1.default.Server({ server: this.httpServer });
-        this.downServer = new koa_1.default();
+        this.filter = new koa_ws_filter_1.default();
+        this.koa = new koa_1.default();
         this.markets = new Map();
-        this.configureHttpServer();
-        this.configureDownServer();
-        this.configureUpServer();
+        // this.configureHttpDownload();
+        // this.configureUpload();
+        // this.configureHttpServer();
+        // this.koa.use(this.filter.filter());
+        // this.httpServer.on('request', this.koa.callback());
     }
-    configureHttpServer() {
-        this.httpServer.timeout = 0;
-        this.httpServer.keepAliveTimeout = 0;
-    }
-    configureUpServer() {
-        this.upServer.on('connection', (quoteAgent) => {
+    //@ts-ignore
+    configureUpload() {
+        const router = new koa_router_1.default();
+        router.all('/:exchange/:pair/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
+            const quoteAgent = yield ctx.upgrade();
             quoteAgent.on('message', (message) => {
                 const data = JSON.parse(message);
-                const marketName = lodash_1.default.toLower(`${data.exchange}.${data.pair[0]}.${data.pair[1]}`);
+                const marketName = lodash_1.default.toLower(`${ctx.params.exchange}/${ctx.params.pair}`);
                 if (!this.markets.has(marketName)) {
                     this.markets.set(marketName, new market_1.default(() => {
                         this.markets.delete(marketName);
@@ -53,16 +55,19 @@ class QuoteCenter extends autonomous_1.default {
                 if (data.orderbook)
                     market.updateOrderbook(data.orderbook);
             });
-        });
-    }
-    configureDownServer() {
-        this.downServer.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
-            ctx.marketName = lodash_1.default.toLower(`${ctx.query.exchange}.${ctx.query.pair}`);
-            yield next();
         }));
+        this.filter.ws(router.routes());
+    }
+    //@ts-ignore
+    configureHttpDownload() {
         const router = new koa_router_1.default();
-        router.get('/trades', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
-            const market = this.markets.get(ctx.marketName);
+        // router.all('', async (ctx, next) => {
+        //     ctx.state.marketName = 
+        //     await next();
+        // });
+        router.get('/:exchange/:pair/trades', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
+            ctx.state.marketName = lodash_1.default.toLower(`${ctx.params.exchange}/${ctx.params.pair}`);
+            const market = this.markets.get(ctx.state.marketName);
             if (market) {
                 ctx.status = 200;
                 ctx.body = market.getTrades(ctx.query.from);
@@ -74,7 +79,8 @@ class QuoteCenter extends autonomous_1.default {
             yield next();
         }));
         router.get('/orderbook', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
-            const market = this.markets.get(ctx.marketName);
+            ctx.state.marketName = lodash_1.default.toLower(`${ctx.params.exchange}/${ctx.params.pair}`);
+            const market = this.markets.get(ctx.state.marketName);
             if (market) {
                 ctx.status = 200;
                 ctx.body = market.getOrderbook(ctx.query.depth);
@@ -85,11 +91,19 @@ class QuoteCenter extends autonomous_1.default {
             }
             yield next();
         }));
-        this.downServer.use(router.routes());
-        this.httpServer.on('request', this.downServer.callback());
+        this.filter.http(router.routes());
+    }
+    //@ts-ignore
+    configureHttpServer() {
+        this.httpServer.timeout = 0;
+        this.httpServer.keepAliveTimeout = 0;
     }
     _start() {
-        return new Promise(resolve => void this.httpServer.listen(config.PORT, resolve));
+        this.koa.listen(config.PORT);
+        return Promise.resolve();
+        // return new Promise<void>(resolve =>
+        //     void this.httpServer.listen(config.PORT, resolve)
+        // );
     }
     _stop() {
         this.markets.forEach(market => market.destructor());
