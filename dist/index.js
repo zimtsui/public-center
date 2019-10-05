@@ -36,7 +36,6 @@ class QuoteCenter extends autonomous_1.default {
         this.koa.use(this.filter.filter());
         this.httpServer.on('request', this.koa.callback());
     }
-    //@ts-ignore
     configureUpload() {
         const router = new koa_router_1.default();
         router.all('/:exchange/:pair/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
@@ -58,23 +57,16 @@ class QuoteCenter extends autonomous_1.default {
         }));
         this.filter.ws(router.routes());
     }
-    //@ts-ignore
     configureHttpDownload() {
         const router = new koa_router_1.default();
-        // router.all('', async (ctx, next) => {
-        //     ctx.state.marketName = 
-        //     await next();
-        // });
         router.get('/:exchange/:pair/trades', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
             ctx.state.marketName = lodash_1.default.toLower(`${ctx.params.exchange}/${ctx.params.pair}`);
             const market = this.markets.get(ctx.state.marketName);
             if (market) {
-                ctx.status = 200;
                 ctx.body = market.getTrades(ctx.query.from);
             }
             else {
                 ctx.status = 404;
-                ctx.body = null;
             }
             yield next();
         }));
@@ -82,18 +74,15 @@ class QuoteCenter extends autonomous_1.default {
             ctx.state.marketName = lodash_1.default.toLower(`${ctx.params.exchange}/${ctx.params.pair}`);
             const market = this.markets.get(ctx.state.marketName);
             if (market) {
-                ctx.status = 200;
                 ctx.body = market.getOrderbook(ctx.query.depth);
             }
             else {
                 ctx.status = 404;
-                ctx.body = null;
             }
             yield next();
         }));
         this.filter.http(router.routes());
     }
-    //@ts-ignore
     configureHttpServer() {
         this.httpServer.timeout = 0;
         this.httpServer.keepAliveTimeout = 0;

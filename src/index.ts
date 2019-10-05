@@ -30,7 +30,7 @@ class QuoteCenter extends Autonomous {
         this.koa.use(this.filter.filter());
         this.httpServer.on('request', this.koa.callback());
     }
-    //@ts-ignore
+
     private configureUpload(): void {
         const router = new Router();
         router.all('/:exchange/:pair/', async (ctx, next) => {
@@ -53,24 +53,18 @@ class QuoteCenter extends Autonomous {
         });
         this.filter.ws(router.routes());
     }
-    //@ts-ignore
+
     private configureHttpDownload(): void {
         const router = new Router();
-        // router.all('', async (ctx, next) => {
-        //     ctx.state.marketName = 
-        //     await next();
-        // });
 
         router.get('/:exchange/:pair/trades', async (ctx, next) => {
             ctx.state.marketName = _.toLower(
                 `${ctx.params.exchange}/${ctx.params.pair}`);
             const market = this.markets.get(ctx.state.marketName);
             if (market) {
-                ctx.status = 200;
                 ctx.body = market.getTrades(ctx.query.from);
             } else {
                 ctx.status = 404;
-                ctx.body = null;
             }
             await next();
         });
@@ -80,18 +74,16 @@ class QuoteCenter extends Autonomous {
                 `${ctx.params.exchange}/${ctx.params.pair}`);
             const market = this.markets.get(ctx.state.marketName);
             if (market) {
-                ctx.status = 200;
                 ctx.body = market.getOrderbook(ctx.query.depth);
             } else {
                 ctx.status = 404;
-                ctx.body = null;
             }
             await next();
         });
 
         this.filter.http(router.routes());
     }
-    //@ts-ignore
+
     private configureHttpServer(): void {
         this.httpServer.timeout = 0;
         this.httpServer.keepAliveTimeout = 0;
