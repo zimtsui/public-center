@@ -382,8 +382,8 @@
         "signature": "02f8dc4777a4efb7efdc6613659540925b2a5660b483f9fa12cbc1b3ddef6050"
       },
       "./node_modules/interfaces/dist/index.d.ts": {
-        "version": "392230d05794d91cd41d0d2c4b2474ba9255a417ba0a9917e7aa5c416c98ea6f",
-        "signature": "392230d05794d91cd41d0d2c4b2474ba9255a417ba0a9917e7aa5c416c98ea6f"
+        "version": "17f80bc55380ad7580f801e8e12ed170f4319ccd84c116ca52dfe9cb0677386a",
+        "signature": "17f80bc55380ad7580f801e8e12ed170f4319ccd84c116ca52dfe9cb0677386a"
       },
       "./src/interfaces.ts": {
         "version": "6ec9186f4dd14fb5fd05a8111839e05ba7d49d85d714db07f8f49774672a2135",
@@ -457,8 +457,12 @@
         "version": "b6ea9837421ca321524fd62c4dc9882e29b6db5f25f73acc2f3d6dab5c48eb9c",
         "signature": "b6ea9837421ca321524fd62c4dc9882e29b6db5f25f73acc2f3d6dab5c48eb9c"
       },
+      "./node_modules/@types/koa__cors/index.d.ts": {
+        "version": "b79cda8e2122af980fcb0bd09d0ecacdf6be4f38088d6d23818547c9ee31a38d",
+        "signature": "b79cda8e2122af980fcb0bd09d0ecacdf6be4f38088d6d23818547c9ee31a38d"
+      },
       "./src/index.ts": {
-        "version": "049561947d49f141e711696a689d42d6316fe09ba471303ded3002f47989095a",
+        "version": "6748048603d01bd3aa47c7a84db2722b6188b6958b190398b5807be93862a883",
         "signature": "b56a9a0c9499cbd05230f3040d7817a39d1e6d95d8ec22cfe7f8b258aa32bd5e"
       },
       "./node_modules/@types/bluebird/index.d.ts": {
@@ -1261,6 +1265,11 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "./node_modules/@types/koa__cors/index.d.ts": [
+        "./node_modules/@types/koa/index.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "./src/index.ts": [
         "./node_modules/autonomous/dist/index.d.ts",
         "./node_modules/@types/node/http.d.ts",
@@ -1271,6 +1280,7 @@
         "./node_modules/@types/node/path.d.ts",
         "./node_modules/@types/lodash/ts3.1/index.d.ts",
         "./node_modules/koa-ws-filter/dist/index.d.ts",
+        "./node_modules/@types/koa__cors/index.d.ts",
         "./src/interfaces.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
@@ -2080,6 +2090,11 @@
         "./node_modules/@types/node/ts3.2/index.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./node_modules/@types/koa__cors/index.d.ts": [
+        "./node_modules/@types/koa/index.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
@@ -2178,9 +2193,6 @@
       "./node_modules/@types/node/ts3.2/globals.d.ts",
       "./node_modules/@types/node/ts3.2/index.d.ts",
       "./node_modules/@types/fs-extra/index.d.ts",
-      "./node_modules/interfaces/dist/index.d.ts",
-      "./src/interfaces.ts",
-      "./src/market.ts",
       "./node_modules/@types/accepts/index.d.ts",
       "./node_modules/@types/keygrip/index.d.ts",
       "./node_modules/@types/range-parser/index.d.ts",
@@ -2196,14 +2208,18 @@
       "./node_modules/@types/koa/index.d.ts",
       "./node_modules/@types/koa-router/index.d.ts",
       "./node_modules/@types/ws/index.d.ts",
+      "./node_modules/koa-ws-filter/dist/index.d.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/chai/index.d.ts",
       "./node_modules/@types/chai-as-promised/index.d.ts",
       "./node_modules/@types/chance/index.d.ts",
       "./node_modules/@types/minimatch/index.d.ts",
       "./node_modules/@types/glob/index.d.ts",
-      "./node_modules/koa-ws-filter/dist/index.d.ts",
-      "./src/index.ts"
+      "./node_modules/interfaces/dist/index.d.ts",
+      "./src/interfaces.ts",
+      "./node_modules/@types/koa__cors/index.d.ts",
+      "./src/index.ts",
+      "./src/market.ts"
     ]
   },
   "version": "3.6.3"

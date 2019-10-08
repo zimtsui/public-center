@@ -1,5 +1,4 @@
 import Autonomous from 'autonomous';
-// import WebSocket from 'ws';
 import http from 'http';
 import Market from './market';
 import Koa from 'koa';
@@ -8,6 +7,7 @@ import fse from 'fs-extra';
 import path from 'path';
 import _ from 'lodash';
 import Filter from 'koa-ws-filter';
+import cors from '@koa/cors';
 import {
     QuoteDataFromAgentToCenter as QDFATC,
     Config,
@@ -81,6 +81,7 @@ class QuoteCenter extends Autonomous {
             await next();
         });
 
+        this.filter.http(cors());
         this.filter.http(router.routes());
     }
 

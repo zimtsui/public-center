@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const autonomous_1 = __importDefault(require("autonomous"));
-// import WebSocket from 'ws';
 const http_1 = __importDefault(require("http"));
 const market_1 = __importDefault(require("./market"));
 const koa_1 = __importDefault(require("koa"));
@@ -22,6 +21,7 @@ const fs_extra_1 = __importDefault(require("fs-extra"));
 const path_1 = __importDefault(require("path"));
 const lodash_1 = __importDefault(require("lodash"));
 const koa_ws_filter_1 = __importDefault(require("koa-ws-filter"));
+const cors_1 = __importDefault(require("@koa/cors"));
 const config = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
 class QuoteCenter extends autonomous_1.default {
     constructor() {
@@ -81,6 +81,7 @@ class QuoteCenter extends autonomous_1.default {
             }
             yield next();
         }));
+        this.filter.http(cors_1.default());
         this.filter.http(router.routes());
     }
     configureHttpServer() {
