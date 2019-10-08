@@ -74,10 +74,7 @@ class Market {
     }
     updateTrades(newTrades) {
         assert_1.default(this.state === States.RUNNING);
-        const latest = this.trades.length
-            ? this.trades[-1].id
-            : Number.NEGATIVE_INFINITY;
-        this.trades.push(...lodash_1.default.takeRightWhile(newTrades, trade => trade.id > latest));
+        this.trades.push(...newTrades);
     }
     updateOrderbook(newOrderbook) {
         assert_1.default(this.state === States.RUNNING);

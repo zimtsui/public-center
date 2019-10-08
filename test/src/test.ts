@@ -67,10 +67,7 @@ async function randomTrades(): Promise<Trade[]> {
 }
 
 async function randomMessage(): Promise<QuoteDataFromAgentToCenter> {
-    const message: QuoteDataFromAgentToCenter = {
-        exchange: 'bitmex',
-        pair: ['btc', 'usd'],
-    };
+    const message: QuoteDataFromAgentToCenter = {};
     if (chance.bool({ likelihood })) message.orderbook = randomOrderbook();
     if (chance.bool({ likelihood })) message.trades = await randomTrades();
     return message;

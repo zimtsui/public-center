@@ -2,11 +2,15 @@ import Autonomous from 'autonomous';
 declare class QuoteCenter extends Autonomous {
     private httpServer;
     private filter;
+    private wsRouter;
+    private httpRouter;
     private koa;
     private markets;
+    private realTime;
     constructor();
     private configureUpload;
     private configureHttpDownload;
+    private configureWsDownload;
     private configureHttpServer;
     protected _start(): Promise<void>;
     protected _stop(): Promise<void>;

@@ -68,10 +68,7 @@ function randomTrades() {
 }
 function randomMessage() {
     return __awaiter(this, void 0, void 0, function* () {
-        const message = {
-            exchange: 'bitmex',
-            pair: ['btc', 'usd'],
-        };
+        const message = {};
         if (chance.bool({ likelihood }))
             message.orderbook = randomOrderbook();
         if (chance.bool({ likelihood }))

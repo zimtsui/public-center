@@ -80,12 +80,7 @@ class Market {
 
     updateTrades(newTrades: Trade[]): void {
         assert(this.state === States.RUNNING);
-        const latest = this.trades.length
-            ? this.trades[-1].id
-            : Number.NEGATIVE_INFINITY;
-        this.trades.push(...
-            _.takeRightWhile(newTrades, trade => trade.id > latest)
-        );
+        this.trades.push(...newTrades);
     }
 
     updateOrderbook(newOrderbook: Orderbook): void {
