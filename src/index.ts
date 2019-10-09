@@ -104,7 +104,7 @@ class QuoteCenter extends Autonomous {
             downloader.on('error', console.error);
 
             downloader.on('close', () => {
-                this.realTime.off(ctx.params.name, onData);
+                this.realTime.off(ctx.state.marketName, onData);
             });
         });
 
@@ -123,7 +123,7 @@ class QuoteCenter extends Autonomous {
             downloader.on('error', console.error);
 
             downloader.on('close', () => {
-                this.realTime.off(ctx.params.name, onData);
+                this.realTime.off(ctx.state.marketName, onData);
             });
         });
     }

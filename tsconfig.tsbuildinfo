@@ -462,7 +462,7 @@
         "signature": "b79cda8e2122af980fcb0bd09d0ecacdf6be4f38088d6d23818547c9ee31a38d"
       },
       "./src/index.ts": {
-        "version": "02da3db3891f5eafcc3452f30579a33fd101173f4554a1c5392c3437b03f5846",
+        "version": "408b9f80980162ab0043e085c1dccd798f244b2af50c2d80cd8768b5a95e759e",
         "signature": "d4a98255b3236664282f73d55105eff7e80314b80cbbc3d38d9612ae11375e6b"
       },
       "./node_modules/@types/bluebird/index.d.ts": {
@@ -2196,6 +2196,7 @@
       "./node_modules/@types/fs-extra/index.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
       "./src/interfaces.ts",
+      "./src/market.ts",
       "./node_modules/@types/accepts/index.d.ts",
       "./node_modules/@types/keygrip/index.d.ts",
       "./node_modules/@types/range-parser/index.d.ts",
@@ -2219,7 +2220,6 @@
       "./node_modules/@types/chance/index.d.ts",
       "./node_modules/@types/minimatch/index.d.ts",
       "./node_modules/@types/glob/index.d.ts",
-      "./src/market.ts",
       "./src/index.ts"
     ]
   },

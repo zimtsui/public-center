@@ -104,7 +104,7 @@ class QuoteCenter extends autonomous_1.default {
             this.realTime.on(ctx.state.marketName, onData);
             downloader.on('error', console.error);
             downloader.on('close', () => {
-                this.realTime.off(ctx.params.name, onData);
+                this.realTime.off(ctx.state.marketName, onData);
             });
         }));
         this.wsRouter.all('/:exchange/:pair/orderbook', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
@@ -122,7 +122,7 @@ class QuoteCenter extends autonomous_1.default {
             this.realTime.on(ctx.state.marketName, onData);
             downloader.on('error', console.error);
             downloader.on('close', () => {
-                this.realTime.off(ctx.params.name, onData);
+                this.realTime.off(ctx.state.marketName, onData);
             });
         }));
     }
