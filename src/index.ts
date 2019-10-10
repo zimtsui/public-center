@@ -28,9 +28,11 @@ class QuoteCenter extends Autonomous {
 
     constructor() {
         super();
+        this.configureHttpServer();
+        this.addMarketName();
+
         this.configureHttpDownload();
         this.configureUpload();
-        this.configureHttpServer();
         this.configureWsDownload();
 
         this.filter.http(cors());
@@ -40,13 +42,23 @@ class QuoteCenter extends Autonomous {
         this.httpServer.on('request', this.koa.callback());
     }
 
-    private configureUpload(): void {
-        this.wsRouter.all('/:exchange/:instrument/:currency', async (ctx, next) => {
-            const quoteAgent = await ctx.upgrade();
+    private addMarketName(): void {
+        async function f(
+            ctx: Router.RouterContext, next: () => Promise<any>,
+        ) {
             ctx.state.marketName = _.toLower(
                 `${ctx.params.exchange
                 }/${ctx.params.instrument
                 }/${ctx.params.currency}`);
+            await next();
+        }
+        this.httpRouter.all('/:exchange/:instrument/:currency/:suffix*', f);
+        this.wsRouter.all('/:exchange/:instrument/:currency/:suffix*', f);
+    }
+
+    private configureUpload(): void {
+        this.wsRouter.all('/:exchange/:instrument/:currency', async (ctx, next) => {
+            const quoteAgent = await ctx.upgrade();
             const { marketName } = ctx.state;
 
             quoteAgent.on('message', (message: string) => {
@@ -67,10 +79,6 @@ class QuoteCenter extends Autonomous {
 
     private configureHttpDownload(): void {
         this.httpRouter.get('/:exchange/:instrument/:currency/trades', async (ctx, next) => {
-            ctx.state.marketName = _.toLower(
-                `${ctx.params.exchange
-                }/${ctx.params.instrument
-                }/${ctx.params.currency}`);
             const { marketName } = ctx.state;
 
             const market = this.markets.get(marketName);
@@ -83,10 +91,6 @@ class QuoteCenter extends Autonomous {
         });
 
         this.httpRouter.get('/:exchange/:instrument/:currency/orderbook', async (ctx, next) => {
-            ctx.state.marketName = _.toLower(
-                `${ctx.params.exchange
-                }/${ctx.params.instrument
-                }/${ctx.params.currency}`);
             const { marketName } = ctx.state;
 
             const market = this.markets.get(marketName);
@@ -102,10 +106,6 @@ class QuoteCenter extends Autonomous {
     private configureWsDownload(): void {
         this.wsRouter.all('/:exchange/:instrument/:currency/trades', async (ctx, next) => {
             const downloader = await ctx.upgrade();
-            ctx.state.marketName = _.toLower(
-                `${ctx.params.exchange
-                }/${ctx.params.instrument
-                }/${ctx.params.currency}`);
             const { marketName } = ctx.state;
 
             function onData(data: QDFATC): void {
@@ -125,10 +125,6 @@ class QuoteCenter extends Autonomous {
 
         this.wsRouter.all('/:exchange/:instrument/:currency/orderbook', async (ctx, next) => {
             const downloader = await ctx.upgrade();
-            ctx.state.marketName = _.toLower(
-                `${ctx.params.exchange
-                }/${ctx.params.instrument
-                }/${ctx.params.currency}`);
             const { marketName } = ctx.state;
 
             function onData(data: QDFATC): void {

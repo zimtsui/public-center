@@ -8,6 +8,7 @@ declare class QuoteCenter extends Autonomous {
     private markets;
     private realTime;
     constructor();
+    private addMarketName;
     private configureUpload;
     private configureHttpDownload;
     private configureWsDownload;

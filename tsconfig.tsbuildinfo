@@ -462,8 +462,8 @@
         "signature": "b79cda8e2122af980fcb0bd09d0ecacdf6be4f38088d6d23818547c9ee31a38d"
       },
       "./src/index.ts": {
-        "version": "a39a5a2afc9194fff5522887452ce0559d273e5ea28a6980b409a6fd926a6c18",
-        "signature": "d4a98255b3236664282f73d55105eff7e80314b80cbbc3d38d9612ae11375e6b"
+        "version": "af89ec27d2f63c093675459b733cab7d0cd0fbd0c462f88376a7cb4757ffbab3",
+        "signature": "e050aa1c0216a0e4e370a4e7cf8da57914dfe6283c3030a499e75f156db44ad0"
       },
       "./node_modules/@types/bluebird/index.d.ts": {
         "version": "3c10804e3bd90aa404eefbc300c362b0ebbd23b34eb03ae592717ac111889f34",

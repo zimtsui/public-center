@@ -95,7 +95,7 @@ test.serial('connection', async t => {
     t.log(1);
     await quoteCenter.start();
     const uploader = new WebSocket(
-        `ws://localhost:${config.PORT}/bitmex/btc.usdt`);
+        `ws://localhost:${config.PORT}/bitmex/btc/usdt`);
     t.log(2);
     await once(uploader, 'open');
     t.log(3);
@@ -113,7 +113,7 @@ test.serial('upload', async t => {
     const quoteCenter = new QuoteCenter();
     await quoteCenter.start();
     const uploader = new WebSocket(
-        `ws://localhost:${config.PORT}/bitmex/btc.usdt`);
+        `ws://localhost:${config.PORT}/bitmex/btc/usdt`);
     await once(uploader, 'open');
     await Bluebird.delay(500);
 
@@ -129,7 +129,7 @@ test.serial('download', async t => {
     const quoteCenter = new QuoteCenter();
     await quoteCenter.start();
     const uploader = new WebSocket(
-        `ws://localhost:${config.PORT}/bitmex/btc.usdt`);
+        `ws://localhost:${config.PORT}/bitmex/btc/usdt`);
     await once(uploader, 'open');
 
     uploader.send(JSON.stringify(await randomMessage()));
@@ -138,10 +138,10 @@ test.serial('download', async t => {
     await once(uploader, 'close');
 
     const orderbook = await axios.get(
-        `http://localhost:${config.PORT}/bitmex/btc.usdt/orderbook`);
+        `http://localhost:${config.PORT}/bitmex/btc/usdt/orderbook`);
     t.log(orderbook.data);
     const trades = await axios.get(
-        `http://localhost:${config.PORT}/bitmex/btc.usdt/trades`);
+        `http://localhost:${config.PORT}/bitmex/btc/usdt/trades`);
     t.log(trades.data);
 
     await quoteCenter.stop();
@@ -152,7 +152,7 @@ test.serial('cleaner', async t => {
     const quoteCenter = new QuoteCenter();
     await quoteCenter.start();
     const uploader = new WebSocket(
-        `ws://localhost:${config.PORT}/bitmex/btc.usdt`);
+        `ws://localhost:${config.PORT}/bitmex/btc/usdt`);
     await once(uploader, 'open');
 
     uploader.send(JSON.stringify(await randomMessage()));
@@ -162,14 +162,14 @@ test.serial('cleaner', async t => {
     await once(uploader, 'close');
 
     await axios.get(
-        `http://localhost:${config.PORT}/bitmex/btc.usdt/trades`)
+        `http://localhost:${config.PORT}/bitmex/btc/usdt/trades`)
         .then(res => res.data)
         .then(data => t.log(data));
 
     await Bluebird.delay(6000);
 
     await axios.get(
-        `http://localhost:${config.PORT}/bitmex/btc.usdt/trades`)
+        `http://localhost:${config.PORT}/bitmex/btc/usdt/trades`)
         .then(res => res.data)
         .then(data => t.log(data));
 

@@ -34,9 +34,10 @@ class QuoteCenter extends autonomous_1.default {
         this.koa = new koa_1.default();
         this.markets = new Map();
         this.realTime = new events_1.default();
+        this.configureHttpServer();
+        this.addMarketName();
         this.configureHttpDownload();
         this.configureUpload();
-        this.configureHttpServer();
         this.configureWsDownload();
         this.filter.http(cors_1.default());
         this.filter.http(this.httpRouter.routes());
@@ -44,10 +45,19 @@ class QuoteCenter extends autonomous_1.default {
         this.koa.use(this.filter.filter());
         this.httpServer.on('request', this.koa.callback());
     }
+    addMarketName() {
+        function f(ctx, next) {
+            return __awaiter(this, void 0, void 0, function* () {
+                ctx.state.marketName = lodash_1.default.toLower(`${ctx.params.exchange}/${ctx.params.instrument}/${ctx.params.currency}`);
+                yield next();
+            });
+        }
+        this.httpRouter.all('/:exchange/:instrument/:currency/:suffix*', f);
+        this.wsRouter.all('/:exchange/:instrument/:currency/:suffix*', f);
+    }
     configureUpload() {
         this.wsRouter.all('/:exchange/:instrument/:currency', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
             const quoteAgent = yield ctx.upgrade();
-            ctx.state.marketName = lodash_1.default.toLower(`${ctx.params.exchange}/${ctx.params.instrument}/${ctx.params.currency}`);
             const { marketName } = ctx.state;
             quoteAgent.on('message', (message) => {
                 const data = JSON.parse(message);
@@ -67,7 +77,6 @@ class QuoteCenter extends autonomous_1.default {
     }
     configureHttpDownload() {
         this.httpRouter.get('/:exchange/:instrument/:currency/trades', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
-            ctx.state.marketName = lodash_1.default.toLower(`${ctx.params.exchange}/${ctx.params.instrument}/${ctx.params.currency}`);
             const { marketName } = ctx.state;
             const market = this.markets.get(marketName);
             if (market) {
@@ -79,7 +88,6 @@ class QuoteCenter extends autonomous_1.default {
             yield next();
         }));
         this.httpRouter.get('/:exchange/:instrument/:currency/orderbook', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
-            ctx.state.marketName = lodash_1.default.toLower(`${ctx.params.exchange}/${ctx.params.instrument}/${ctx.params.currency}`);
             const { marketName } = ctx.state;
             const market = this.markets.get(marketName);
             if (market) {
@@ -94,7 +102,6 @@ class QuoteCenter extends autonomous_1.default {
     configureWsDownload() {
         this.wsRouter.all('/:exchange/:instrument/:currency/trades', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
             const downloader = yield ctx.upgrade();
-            ctx.state.marketName = lodash_1.default.toLower(`${ctx.params.exchange}/${ctx.params.instrument}/${ctx.params.currency}`);
             const { marketName } = ctx.state;
             function onData(data) {
                 if (!data.trades)
@@ -113,7 +120,6 @@ class QuoteCenter extends autonomous_1.default {
         }));
         this.wsRouter.all('/:exchange/:instrument/:currency/orderbook', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
             const downloader = yield ctx.upgrade();
-            ctx.state.marketName = lodash_1.default.toLower(`${ctx.params.exchange}/${ctx.params.instrument}/${ctx.params.currency}`);
             const { marketName } = ctx.state;
             function onData(data) {
                 if (!data.orderbook)

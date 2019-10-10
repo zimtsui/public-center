@@ -95,7 +95,7 @@ ava_1.default.serial('connection', (t) => __awaiter(void 0, void 0, void 0, func
     const quoteCenter = new __1.default();
     t.log(1);
     yield quoteCenter.start();
-    const uploader = new ws_1.default(`ws://localhost:${config.PORT}/bitmex/btc.usdt`);
+    const uploader = new ws_1.default(`ws://localhost:${config.PORT}/bitmex/btc/usdt`);
     t.log(2);
     yield events_1.once(uploader, 'open');
     t.log(3);
@@ -111,7 +111,7 @@ ava_1.default.serial('upload', (t) => __awaiter(void 0, void 0, void 0, function
     global.t = t;
     const quoteCenter = new __1.default();
     yield quoteCenter.start();
-    const uploader = new ws_1.default(`ws://localhost:${config.PORT}/bitmex/btc.usdt`);
+    const uploader = new ws_1.default(`ws://localhost:${config.PORT}/bitmex/btc/usdt`);
     yield events_1.once(uploader, 'open');
     yield bluebird_1.default.delay(500);
     uploader.send(JSON.stringify(yield randomMessage()));
@@ -124,15 +124,15 @@ ava_1.default.serial('download', (t) => __awaiter(void 0, void 0, void 0, functi
     global.t = t;
     const quoteCenter = new __1.default();
     yield quoteCenter.start();
-    const uploader = new ws_1.default(`ws://localhost:${config.PORT}/bitmex/btc.usdt`);
+    const uploader = new ws_1.default(`ws://localhost:${config.PORT}/bitmex/btc/usdt`);
     yield events_1.once(uploader, 'open');
     uploader.send(JSON.stringify(yield randomMessage()));
     yield bluebird_1.default.delay(1000);
     uploader.close();
     yield events_1.once(uploader, 'close');
-    const orderbook = yield axios_1.default.get(`http://localhost:${config.PORT}/bitmex/btc.usdt/orderbook`);
+    const orderbook = yield axios_1.default.get(`http://localhost:${config.PORT}/bitmex/btc/usdt/orderbook`);
     t.log(orderbook.data);
-    const trades = yield axios_1.default.get(`http://localhost:${config.PORT}/bitmex/btc.usdt/trades`);
+    const trades = yield axios_1.default.get(`http://localhost:${config.PORT}/bitmex/btc/usdt/trades`);
     t.log(trades.data);
     yield quoteCenter.stop();
 }));
@@ -140,18 +140,18 @@ ava_1.default.serial('cleaner', (t) => __awaiter(void 0, void 0, void 0, functio
     global.t = t;
     const quoteCenter = new __1.default();
     yield quoteCenter.start();
-    const uploader = new ws_1.default(`ws://localhost:${config.PORT}/bitmex/btc.usdt`);
+    const uploader = new ws_1.default(`ws://localhost:${config.PORT}/bitmex/btc/usdt`);
     yield events_1.once(uploader, 'open');
     uploader.send(JSON.stringify(yield randomMessage()));
     yield bluebird_1.default.delay(5000);
     uploader.send(JSON.stringify(yield randomMessage()));
     uploader.close();
     yield events_1.once(uploader, 'close');
-    yield axios_1.default.get(`http://localhost:${config.PORT}/bitmex/btc.usdt/trades`)
+    yield axios_1.default.get(`http://localhost:${config.PORT}/bitmex/btc/usdt/trades`)
         .then(res => res.data)
         .then(data => t.log(data));
     yield bluebird_1.default.delay(6000);
-    yield axios_1.default.get(`http://localhost:${config.PORT}/bitmex/btc.usdt/trades`)
+    yield axios_1.default.get(`http://localhost:${config.PORT}/bitmex/btc/usdt/trades`)
         .then(res => res.data)
         .then(data => t.log(data));
     yield quoteCenter.stop();
