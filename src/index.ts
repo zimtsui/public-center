@@ -41,32 +41,39 @@ class QuoteCenter extends Autonomous {
     }
 
     private configureUpload(): void {
-        this.wsRouter.all('/:exchange/:pair/', async (ctx, next) => {
+        this.wsRouter.all('/:exchange/:instrument/:currency', async (ctx, next) => {
             const quoteAgent = await ctx.upgrade();
+            ctx.state.marketName = _.toLower(
+                `${ctx.params.exchange
+                }/${ctx.params.instrument
+                }/${ctx.params.currency}`);
+            const { marketName } = ctx.state;
+
             quoteAgent.on('message', (message: string) => {
                 const data: QDFATC = JSON.parse(message);
-
-                ctx.state.marketName = _.toLower(
-                    `${ctx.params.exchange}/${ctx.params.pair}`);
-                if (!this.markets.has(ctx.state.marketName)) {
-                    this.markets.set(ctx.state.marketName, new Market(() => {
-                        this.markets.delete(ctx.state.marketName);
+                if (!this.markets.has(marketName)) {
+                    this.markets.set(marketName, new Market(() => {
+                        this.markets.delete(marketName);
                     }));
                 }
-                const market = this.markets.get(ctx.state.marketName);
+                const market = this.markets.get(marketName);
 
                 if (data.trades) market!.updateTrades(data.trades);
                 if (data.orderbook) market!.updateOrderbook(data.orderbook);
-                this.realTime.emit(ctx.state.marketName, data);
+                this.realTime.emit(marketName, data);
             });
         });
     }
 
     private configureHttpDownload(): void {
-        this.httpRouter.get('/:exchange/:pair/trades', async (ctx, next) => {
+        this.httpRouter.get('/:exchange/:instrument/:currency/trades', async (ctx, next) => {
             ctx.state.marketName = _.toLower(
-                `${ctx.params.exchange}/${ctx.params.pair}`);
-            const market = this.markets.get(ctx.state.marketName);
+                `${ctx.params.exchange
+                }/${ctx.params.instrument
+                }/${ctx.params.currency}`);
+            const { marketName } = ctx.state;
+
+            const market = this.markets.get(marketName);
             if (market) {
                 ctx.body = market.getTrades(ctx.query.from);
             } else {
@@ -75,10 +82,14 @@ class QuoteCenter extends Autonomous {
             await next();
         });
 
-        this.httpRouter.get('/:exchange/:pair/orderbook', async (ctx, next) => {
+        this.httpRouter.get('/:exchange/:instrument/:currency/orderbook', async (ctx, next) => {
             ctx.state.marketName = _.toLower(
-                `${ctx.params.exchange}/${ctx.params.pair}`);
-            const market = this.markets.get(ctx.state.marketName);
+                `${ctx.params.exchange
+                }/${ctx.params.instrument
+                }/${ctx.params.currency}`);
+            const { marketName } = ctx.state;
+
+            const market = this.markets.get(marketName);
             if (market) {
                 ctx.body = market.getOrderbook(ctx.query.depth);
             } else {
@@ -89,10 +100,14 @@ class QuoteCenter extends Autonomous {
     }
 
     private configureWsDownload(): void {
-        this.wsRouter.all('/:exchange/:pair/trades', async (ctx, next) => {
+        this.wsRouter.all('/:exchange/:instrument/:currency/trades', async (ctx, next) => {
             const downloader = await ctx.upgrade();
             ctx.state.marketName = _.toLower(
-                `${ctx.params.exchange}/${ctx.params.pair}`);
+                `${ctx.params.exchange
+                }/${ctx.params.instrument
+                }/${ctx.params.currency}`);
+            const { marketName } = ctx.state;
+
             function onData(data: QDFATC): void {
                 if (!data.trades) return;
                 const message = JSON.stringify(data.trades);
@@ -100,18 +115,22 @@ class QuoteCenter extends Autonomous {
                     if (err) console.error(err);
                 });
             }
-            this.realTime.on(ctx.state.marketName, onData);
+            this.realTime.on(marketName, onData);
             downloader.on('error', console.error);
 
             downloader.on('close', () => {
-                this.realTime.off(ctx.state.marketName, onData);
+                this.realTime.off(marketName, onData);
             });
         });
 
-        this.wsRouter.all('/:exchange/:pair/orderbook', async (ctx, next) => {
+        this.wsRouter.all('/:exchange/:instrument/:currency/orderbook', async (ctx, next) => {
             const downloader = await ctx.upgrade();
             ctx.state.marketName = _.toLower(
-                `${ctx.params.exchange}/${ctx.params.pair}`);
+                `${ctx.params.exchange
+                }/${ctx.params.instrument
+                }/${ctx.params.currency}`);
+            const { marketName } = ctx.state;
+
             function onData(data: QDFATC): void {
                 if (!data.orderbook) return;
                 const message = JSON.stringify(data.orderbook);
@@ -119,11 +138,11 @@ class QuoteCenter extends Autonomous {
                     if (err) console.error(err);
                 });
             }
-            this.realTime.on(ctx.state.marketName, onData);
+            this.realTime.on(marketName, onData);
             downloader.on('error', console.error);
 
             downloader.on('close', () => {
-                this.realTime.off(ctx.state.marketName, onData);
+                this.realTime.off(marketName, onData);
             });
         });
     }
