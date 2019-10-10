@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         /* Basic Options */
-        "target": "es6",
+        "target": "es2020",
         "module": "commonjs",
         "lib": [
             "esnext"
@@ -15,6 +15,6 @@
         "noFallthroughCasesInSwitch": true,
         /* Module Resolution Options */
         "esModuleInterop": true,
-        "resolveJsonModule": true,
+        "resolveJsonModule": true
     }
 }

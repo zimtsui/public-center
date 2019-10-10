@@ -2,15 +2,6 @@
 /**
  * 之所以用 id 来排序是因为有的交易所会出现多个订单时间相同的情况。
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -33,14 +24,14 @@ class Market {
         this.state = States.RUNNING;
         this.trades = new queue_1.default();
         this.orderbook = { asks: [], bids: [], };
-        this.config = Object.assign(Object.assign({}, defaultConfig), userConfig);
-        const polling = (stopping, isRunning, delay) => __awaiter(this, void 0, void 0, function* () {
+        this.config = { ...defaultConfig, ...userConfig };
+        const polling = async (stopping, isRunning, delay) => {
             for (;;) {
                 /**
                  * await delay 必须放循环前面，不然 market 构造析构就在同一个
                  * eventloop 了。
                  */
-                yield delay(this.config.INTERVAL_OF_CLEANING);
+                await delay(this.config.INTERVAL_OF_CLEANING);
                 if (!isRunning())
                     break;
                 const now = Date.now();
@@ -48,7 +39,7 @@ class Market {
                 this.trades.length || this.destructor();
             }
             stopping();
-        });
+        };
         this.cleaner = new pollerloop_1.default(polling);
         /**
          * 不需要 cb，因为 cleaner 根本不会自析构。

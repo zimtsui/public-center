@@ -491,7 +491,7 @@
       }
     },
     "options": {
-      "target": 2,
+      "target": 7,
       "module": 1,
       "lib": [
         "lib.esnext.d.ts"
@@ -2214,13 +2214,13 @@
       "./node_modules/@types/ws/index.d.ts",
       "./node_modules/koa-ws-filter/dist/index.d.ts",
       "./node_modules/@types/koa__cors/index.d.ts",
+      "./src/index.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/chai/index.d.ts",
       "./node_modules/@types/chai-as-promised/index.d.ts",
       "./node_modules/@types/chance/index.d.ts",
       "./node_modules/@types/minimatch/index.d.ts",
-      "./node_modules/@types/glob/index.d.ts",
-      "./src/index.ts"
+      "./node_modules/@types/glob/index.d.ts"
     ]
   },
   "version": "3.6.3"

@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -46,18 +37,16 @@ class QuoteCenter extends autonomous_1.default {
         this.httpServer.on('request', this.koa.callback());
     }
     addMarketName() {
-        function f(ctx, next) {
-            return __awaiter(this, void 0, void 0, function* () {
-                ctx.state.marketName = lodash_1.default.toLower(`${ctx.params.exchange}/${ctx.params.instrument}/${ctx.params.currency}`);
-                yield next();
-            });
+        async function f(ctx, next) {
+            ctx.state.marketName = lodash_1.default.toLower(`${ctx.params.exchange}/${ctx.params.instrument}/${ctx.params.currency}`);
+            await next();
         }
         this.httpRouter.all('/:exchange/:instrument/:currency/:suffix*', f);
         this.wsRouter.all('/:exchange/:instrument/:currency/:suffix*', f);
     }
     configureUpload() {
-        this.wsRouter.all('/:exchange/:instrument/:currency', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
-            const quoteAgent = yield ctx.upgrade();
+        this.wsRouter.all('/:exchange/:instrument/:currency', async (ctx, next) => {
+            const quoteAgent = await ctx.upgrade();
             const { marketName } = ctx.state;
             quoteAgent.on('message', (message) => {
                 const data = JSON.parse(message);
@@ -73,10 +62,10 @@ class QuoteCenter extends autonomous_1.default {
                     market.updateOrderbook(data.orderbook);
                 this.realTime.emit(marketName, data);
             });
-        }));
+        });
     }
     configureHttpDownload() {
-        this.httpRouter.get('/:exchange/:instrument/:currency/trades', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
+        this.httpRouter.get('/:exchange/:instrument/:currency/trades', async (ctx, next) => {
             const { marketName } = ctx.state;
             const market = this.markets.get(marketName);
             if (market) {
@@ -85,9 +74,9 @@ class QuoteCenter extends autonomous_1.default {
             else {
                 ctx.status = 404;
             }
-            yield next();
-        }));
-        this.httpRouter.get('/:exchange/:instrument/:currency/orderbook', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
+            await next();
+        });
+        this.httpRouter.get('/:exchange/:instrument/:currency/orderbook', async (ctx, next) => {
             const { marketName } = ctx.state;
             const market = this.markets.get(marketName);
             if (market) {
@@ -96,12 +85,12 @@ class QuoteCenter extends autonomous_1.default {
             else {
                 ctx.status = 404;
             }
-            yield next();
-        }));
+            await next();
+        });
     }
     configureWsDownload() {
-        this.wsRouter.all('/:exchange/:instrument/:currency/trades', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
-            const downloader = yield ctx.upgrade();
+        this.wsRouter.all('/:exchange/:instrument/:currency/trades', async (ctx, next) => {
+            const downloader = await ctx.upgrade();
             const { marketName } = ctx.state;
             function onData(data) {
                 if (!data.trades)
@@ -117,9 +106,9 @@ class QuoteCenter extends autonomous_1.default {
             downloader.on('close', () => {
                 this.realTime.off(marketName, onData);
             });
-        }));
-        this.wsRouter.all('/:exchange/:instrument/:currency/orderbook', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
-            const downloader = yield ctx.upgrade();
+        });
+        this.wsRouter.all('/:exchange/:instrument/:currency/orderbook', async (ctx, next) => {
+            const downloader = await ctx.upgrade();
             const { marketName } = ctx.state;
             function onData(data) {
                 if (!data.orderbook)
@@ -135,7 +124,7 @@ class QuoteCenter extends autonomous_1.default {
             downloader.on('close', () => {
                 this.realTime.off(marketName, onData);
             });
-        }));
+        });
     }
     configureHttpServer() {
         this.httpServer.timeout = 0;
