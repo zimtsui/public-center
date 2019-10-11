@@ -133,9 +133,10 @@ class QuoteCenter extends autonomous_1.default {
     _start() {
         return new Promise(resolve => void this.httpServer.listen(config.PORT, resolve));
     }
-    _stop() {
+    async _stop() {
+        await this.filter.close();
         this.markets.forEach(market => market.destructor());
-        return new Promise((resolve, reject) => void this.httpServer.close(err => {
+        await new Promise((resolve, reject) => void this.httpServer.close(err => {
             if (err)
                 reject(err);
             else
