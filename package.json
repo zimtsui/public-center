@@ -1,5 +1,5 @@
 {
-    "name": "quote-center",
+    "name": "public-center",
     "version": "0.0.1",
     "description": "",
     "main": "./dist/index.js",
@@ -14,14 +14,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/zimtsui/quote-center.git"
+        "url": "git+https://github.com/zimtsui/public-center.git"
     },
     "author": "Zim",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/zimtsui/quote-center/issues"
+        "url": "https://github.com/zimtsui/public-center/issues"
     },
-    "homepage": "https://github.com/zimtsui/quote-center#readme",
+    "homepage": "https://github.com/zimtsui/public-center#readme",
     "devDependencies": {
         "@types/chai": "^4.2.3",
         "@types/chai-as-promised": "^7.1.2",

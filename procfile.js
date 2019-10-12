@@ -1,5 +1,8 @@
 'use strict';
 
+const { autoExitDecorator } = require('autonomous');
+const PublicCenter = require('./').default;
+
 module.exports = (pandora) => {
     pandora
         .process('process1')
@@ -9,8 +12,10 @@ module.exports = (pandora) => {
         });
 
     pandora
-        .service('quote-center', './')
-        .process('process1');
+        .service(
+            'public-center',
+            autoExitDecorator(3000)(PublicCenter)
+        ).process('process1');
 
     /**
      * you can also use cluster mode to start application

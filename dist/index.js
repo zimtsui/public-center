@@ -15,7 +15,7 @@ const koa_ws_filter_1 = __importDefault(require("koa-ws-filter"));
 const events_1 = __importDefault(require("events"));
 const cors_1 = __importDefault(require("@koa/cors"));
 const config = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
-class QuoteCenter extends autonomous_1.default {
+class PublicCenter extends autonomous_1.default {
     constructor() {
         super();
         this.httpServer = http_1.default.createServer();
@@ -46,9 +46,9 @@ class QuoteCenter extends autonomous_1.default {
     }
     configureUpload() {
         this.wsRouter.all('/:exchange/:instrument/:currency', async (ctx, next) => {
-            const quoteAgent = await ctx.upgrade();
+            const publicAgent = await ctx.upgrade();
             const { marketName } = ctx.state;
-            quoteAgent.on('message', (message) => {
+            publicAgent.on('message', (message) => {
                 const data = JSON.parse(message);
                 if (!this.markets.has(marketName)) {
                     this.markets.set(marketName, new market_1.default(() => {
@@ -144,5 +144,6 @@ class QuoteCenter extends autonomous_1.default {
         }));
     }
 }
-exports.default = QuoteCenter;
+exports.PublicCenter = PublicCenter;
+exports.default = PublicCenter;
 //# sourceMappingURL=index.js.map

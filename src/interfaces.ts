@@ -1,10 +1,4 @@
-import {
-    Action,
-    Trade,
-    Order,
-    Orderbook,
-    QuoteDataFromAgentToCenter,
-} from 'interfaces';
+export * from 'interfaces';
 
 interface Config {
     PORT: number;
@@ -14,9 +8,4 @@ interface Config {
 
 export {
     Config,
-    Action,
-    Trade,
-    Order,
-    Orderbook,
-    QuoteDataFromAgentToCenter,
 };

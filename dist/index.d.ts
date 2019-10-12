@@ -1,5 +1,5 @@
 import Autonomous from 'autonomous';
-declare class QuoteCenter extends Autonomous {
+declare class PublicCenter extends Autonomous {
     private httpServer;
     private filter;
     private wsRouter;
@@ -16,4 +16,5 @@ declare class QuoteCenter extends Autonomous {
     protected _start(): Promise<void>;
     protected _stop(): Promise<void>;
 }
-export default QuoteCenter;
+export default PublicCenter;
+export { PublicCenter };

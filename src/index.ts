@@ -10,14 +10,14 @@ import Filter from 'koa-ws-filter';
 import EventEmitter from 'events';
 import cors from '@koa/cors';
 import {
-    QuoteDataFromAgentToCenter as QDFATC,
+    PublicDataFromAgentToCenter as PDFATC,
     Config,
 } from './interfaces';
 
 const config: Config = fse.readJsonSync(path.join(__dirname,
     '../cfg/config.json'));
 
-class QuoteCenter extends Autonomous {
+class PublicCenter extends Autonomous {
     private httpServer = http.createServer();
     private filter = new Filter();
     private wsRouter = new Router();
@@ -58,11 +58,11 @@ class QuoteCenter extends Autonomous {
 
     private configureUpload(): void {
         this.wsRouter.all('/:exchange/:instrument/:currency', async (ctx, next) => {
-            const quoteAgent = await ctx.upgrade();
+            const publicAgent = await ctx.upgrade();
             const { marketName } = ctx.state;
 
-            quoteAgent.on('message', (message: string) => {
-                const data: QDFATC = JSON.parse(message);
+            publicAgent.on('message', (message: string) => {
+                const data: PDFATC = JSON.parse(message);
                 if (!this.markets.has(marketName)) {
                     this.markets.set(marketName, new Market(() => {
                         this.markets.delete(marketName);
@@ -108,7 +108,7 @@ class QuoteCenter extends Autonomous {
             const downloader = await ctx.upgrade();
             const { marketName } = ctx.state;
 
-            function onData(data: QDFATC): void {
+            function onData(data: PDFATC): void {
                 if (!data.trades) return;
                 const message = JSON.stringify(data.trades);
                 downloader.send(message, (err?: Error) => {
@@ -127,7 +127,7 @@ class QuoteCenter extends Autonomous {
             const downloader = await ctx.upgrade();
             const { marketName } = ctx.state;
 
-            function onData(data: QDFATC): void {
+            function onData(data: PDFATC): void {
                 if (!data.orderbook) return;
                 const message = JSON.stringify(data.orderbook);
                 downloader.send(message, (err?: Error) => {
@@ -164,4 +164,5 @@ class QuoteCenter extends Autonomous {
     }
 }
 
-export default QuoteCenter;
+export default PublicCenter;
+export { PublicCenter };
