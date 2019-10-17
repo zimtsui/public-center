@@ -105,10 +105,7 @@ class PublicCenter extends autonomous_1.default {
                 if (!data.trades)
                     return;
                 const message = JSON.stringify(data.trades);
-                downloader.send(message, (err) => {
-                    if (err)
-                        console.error(err);
-                });
+                downloader.send(message);
             }
             this.realTime.on(marketName, onData);
             downloader.on('error', console.error);
@@ -123,10 +120,7 @@ class PublicCenter extends autonomous_1.default {
                 if (!data.orderbook)
                     return;
                 const message = JSON.stringify(data.orderbook);
-                downloader.send(message, (err) => {
-                    if (err)
-                        console.error(err);
-                });
+                downloader.send(message);
             }
             this.realTime.on(marketName, onData);
             downloader.on('error', console.error);
@@ -138,18 +132,12 @@ class PublicCenter extends autonomous_1.default {
             const downloader = await ctx.upgrade();
             const { marketName } = ctx.state;
             const message = JSON.stringify(this.onlineMarkets.has(marketName));
-            downloader.send(message, (err) => {
-                if (err)
-                    console.error(err);
-            });
+            downloader.send(message);
             function onData(data) {
                 if (typeof data.online !== 'boolean')
                     return;
                 const message = JSON.stringify(data.online);
-                downloader.send(message, (err) => {
-                    if (err)
-                        console.error(err);
-                });
+                downloader.send(message);
             }
             this.realTime.on(marketName, onData);
             downloader.on('error', console.error);

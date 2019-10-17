@@ -128,9 +128,7 @@ class PublicCenter extends Autonomous {
             function onData(data: PDFATC): void {
                 if (!data.trades) return;
                 const message = JSON.stringify(data.trades);
-                downloader.send(message, (err?: Error) => {
-                    if (err) console.error(err);
-                });
+                downloader.send(message);
             }
             this.realTime.on(marketName, onData);
             downloader.on('error', console.error);
@@ -147,9 +145,7 @@ class PublicCenter extends Autonomous {
             function onData(data: PDFATC): void {
                 if (!data.orderbook) return;
                 const message = JSON.stringify(data.orderbook);
-                downloader.send(message, (err?: Error) => {
-                    if (err) console.error(err);
-                });
+                downloader.send(message);
             }
             this.realTime.on(marketName, onData);
             downloader.on('error', console.error);
@@ -166,16 +162,12 @@ class PublicCenter extends Autonomous {
             const message = JSON.stringify(
                 this.onlineMarkets.has(marketName)
             );
-            downloader.send(message, (err?: Error) => {
-                if (err) console.error(err);
-            });
+            downloader.send(message);
 
             function onData(data: PDFATCWithMeta): void {
                 if (typeof data.online !== 'boolean') return;
                 const message = JSON.stringify(data.online);
-                downloader.send(message, (err?: Error) => {
-                    if (err) console.error(err);
-                });
+                downloader.send(message);
             }
             this.realTime.on(marketName, onData);
             downloader.on('error', console.error);
