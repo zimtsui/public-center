@@ -1,74 +1,35 @@
 "use strict";
-/**
- * 之所以用 id 来排序是因为有的交易所会出现多个订单时间相同的情况。
- */
+/*
+    交易所给的 trade id 不一定是有序的，甚至都不一定是数字。
+*/
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const lodash_1 = __importDefault(require("lodash"));
-const pollerloop_1 = __importDefault(require("pollerloop"));
-const queue_1 = __importDefault(require("queue"));
-const fs_extra_1 = __importDefault(require("fs-extra"));
-const path_1 = __importDefault(require("path"));
-const assert_1 = __importDefault(require("assert"));
-const defaultConfig = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
-var States;
-(function (States) {
-    States[States["RUNNING"] = 0] = "RUNNING";
-    States[States["DESTRUCTED"] = 1] = "DESTRUCTED";
-})(States || (States = {}));
+const lodash_1 = require("lodash");
+const ttl_queue_1 = __importDefault(require("ttl-queue"));
 class Market {
-    constructor(destructing = () => { }, userConfig) {
-        this.destructing = destructing;
-        this.state = States.RUNNING;
-        this.trades = new queue_1.default();
-        this.orderbook = { asks: [], bids: [], };
-        this.config = { ...defaultConfig, ...userConfig };
-        const polling = async (stopping, isRunning, delay) => {
-            for (;;) {
-                /**
-                 * await delay 必须放循环前面，不然 market 构造析构就在同一个
-                 * eventloop 了。
-                 */
-                await delay(this.config.INTERVAL_OF_CLEANING);
-                if (!isRunning())
-                    break;
-                const now = Date.now();
-                this.trades.shiftWhile(trade => trade.time < now - this.config.TTL);
-                this.trades.length || this.destructor();
-            }
-            stopping();
-        };
-        this.cleaner = new pollerloop_1.default(polling);
-        /**
-         * 不需要 cb，因为 cleaner 根本不会自析构。
-         */
-        this.cleaner.start();
+    constructor(config) {
+        this.config = config;
+        this.trades = new ttl_queue_1.default(this.config.TTL);
+        this.orderbook = { asks: [], bids: [] };
     }
-    destructor() {
-        assert_1.default(this.state === States.RUNNING);
-        this.state = States.DESTRUCTED;
-        this.destructing();
-        this.cleaner.stop();
-    }
-    getTrades(from = Number.NEGATIVE_INFINITY) {
-        assert_1.default(this.state === States.RUNNING);
-        return lodash_1.default.takeRightWhile(this.trades, trade => trade.id > from);
-    }
-    getOrderbook(depth = Number.POSITIVE_INFINITY) {
-        assert_1.default(this.state === States.RUNNING);
-        return {
-            bids: lodash_1.default.take(this.orderbook.bids, depth),
-            asks: lodash_1.default.take(this.orderbook.asks, depth),
-        };
+    getTrades(from = Symbol('unique')) {
+        return lodash_1.takeRightWhile(this.trades, trade => trade.id !== from);
     }
     updateTrades(newTrades) {
-        assert_1.default(this.state === States.RUNNING);
-        this.trades.push(...newTrades);
+        this.trades.pushWithTime(...newTrades.map(trade => ({
+            element: trade,
+            time: trade.time,
+        })));
+    }
+    getOrderbook(depth = Number.POSITIVE_INFINITY) {
+        return {
+            bids: lodash_1.take(this.orderbook.bids, depth),
+            asks: lodash_1.take(this.orderbook.asks, depth),
+        };
     }
     updateOrderbook(newOrderbook) {
-        assert_1.default(this.state === States.RUNNING);
         this.orderbook = newOrderbook;
     }
 }

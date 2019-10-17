@@ -6,6 +6,7 @@ declare class PublicCenter extends Autonomous {
     private httpRouter;
     private koa;
     private markets;
+    private onlineMarkets;
     private realTime;
     constructor();
     private addMarketName;

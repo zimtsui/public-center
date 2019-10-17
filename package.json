@@ -51,6 +51,7 @@
         "lodash": "^4.17.15",
         "pollerloop": "git+https://github.com/zimtsui/pollerloop.git",
         "queue": "git+https://github.com/zimtsui/queue.git",
+        "ttl-queue": "git+https://github.com/zimtsui/ttl-queue.git",
         "ws": "^7.1.2"
     },
     "ava": {

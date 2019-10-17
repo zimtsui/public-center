@@ -8,13 +8,13 @@ const http_1 = __importDefault(require("http"));
 const market_1 = __importDefault(require("./market"));
 const koa_1 = __importDefault(require("koa"));
 const koa_router_1 = __importDefault(require("koa-router"));
-const fs_extra_1 = __importDefault(require("fs-extra"));
+const fs_extra_1 = require("fs-extra");
 const path_1 = __importDefault(require("path"));
 const lodash_1 = __importDefault(require("lodash"));
 const koa_ws_filter_1 = __importDefault(require("koa-ws-filter"));
 const events_1 = __importDefault(require("events"));
 const cors_1 = __importDefault(require("@koa/cors"));
-const config = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
+const config = fs_extra_1.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
 class PublicCenter extends autonomous_1.default {
     constructor() {
         super();
@@ -24,6 +24,7 @@ class PublicCenter extends autonomous_1.default {
         this.httpRouter = new koa_router_1.default();
         this.koa = new koa_1.default();
         this.markets = new Map();
+        this.onlineMarkets = new Set();
         this.realTime = new events_1.default();
         this.configureHttpServer();
         this.addMarketName();
@@ -47,13 +48,19 @@ class PublicCenter extends autonomous_1.default {
     configureUpload() {
         this.wsRouter.all('/:exchange/:instrument/:currency', async (ctx, next) => {
             const publicAgent = await ctx.upgrade();
-            const { marketName } = ctx.state;
+            const marketName = ctx.state.marketName;
+            this.onlineMarkets.add(marketName);
+            const data = { online: true };
+            this.realTime.emit(marketName, data);
+            publicAgent.on('close', () => {
+                this.onlineMarkets.delete(marketName);
+                const data = { online: false };
+                this.realTime.emit(marketName, data);
+            });
             publicAgent.on('message', (message) => {
                 const data = JSON.parse(message);
                 if (!this.markets.has(marketName)) {
-                    this.markets.set(marketName, new market_1.default(() => {
-                        this.markets.delete(marketName);
-                    }));
+                    this.markets.set(marketName, new market_1.default(config));
                 }
                 const market = this.markets.get(marketName);
                 if (data.trades)
@@ -67,8 +74,8 @@ class PublicCenter extends autonomous_1.default {
     configureHttpDownload() {
         this.httpRouter.get('/:exchange/:instrument/:currency/trades', async (ctx, next) => {
             const { marketName } = ctx.state;
-            const market = this.markets.get(marketName);
-            if (market) {
+            if (this.onlineMarkets.has(marketName)) {
+                const market = this.markets.get(marketName);
                 ctx.body = market.getTrades(ctx.query.from);
             }
             else {
@@ -78,8 +85,8 @@ class PublicCenter extends autonomous_1.default {
         });
         this.httpRouter.get('/:exchange/:instrument/:currency/orderbook', async (ctx, next) => {
             const { marketName } = ctx.state;
-            const market = this.markets.get(marketName);
-            if (market) {
+            if (this.onlineMarkets.has(marketName)) {
+                const market = this.markets.get(marketName);
                 ctx.body = market.getOrderbook(ctx.query.depth);
             }
             else {
@@ -125,6 +132,29 @@ class PublicCenter extends autonomous_1.default {
                 this.realTime.off(marketName, onData);
             });
         });
+        this.wsRouter.all('/:exchange/:instrument/:currency/online', async (ctx, next) => {
+            const downloader = await ctx.upgrade();
+            const { marketName } = ctx.state;
+            const message = JSON.stringify(this.onlineMarkets.has(marketName));
+            downloader.send(message, (err) => {
+                if (err)
+                    console.error(err);
+            });
+            function onData(data) {
+                if (typeof data.online !== 'boolean')
+                    return;
+                const message = JSON.stringify(data.online);
+                downloader.send(message, (err) => {
+                    if (err)
+                        console.error(err);
+                });
+            }
+            this.realTime.on(marketName, onData);
+            downloader.on('error', console.error);
+            downloader.on('close', () => {
+                this.realTime.off(marketName, onData);
+            });
+        });
     }
     configureHttpServer() {
         this.httpServer.timeout = 0;
@@ -135,7 +165,6 @@ class PublicCenter extends autonomous_1.default {
     }
     async _stop() {
         await this.filter.close();
-        this.markets.forEach(market => market.destructor());
         await new Promise((resolve, reject) => void this.httpServer.close(err => {
             if (err)
                 reject(err);
