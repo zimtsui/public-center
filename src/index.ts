@@ -71,11 +71,13 @@ class PublicCenter extends Autonomous {
 
             const data: PDFATCWithMeta = { online: true };
             this.realTime.emit(marketName, data);
+            console.log(`${marketName} online`);
 
             publicAgent.on('close', () => {
                 this.onlineMarkets.delete(marketName);
                 const data: PDFATCWithMeta = { online: false };
                 this.realTime.emit(marketName, data);
+                console.log(`${marketName} offline`);
             });
 
             publicAgent.on('message', (message: string) => {

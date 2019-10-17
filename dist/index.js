@@ -52,10 +52,12 @@ class PublicCenter extends autonomous_1.default {
             this.onlineMarkets.add(marketName);
             const data = { online: true };
             this.realTime.emit(marketName, data);
+            console.log(`${marketName} online`);
             publicAgent.on('close', () => {
                 this.onlineMarkets.delete(marketName);
                 const data = { online: false };
                 this.realTime.emit(marketName, data);
+                console.log(`${marketName} offline`);
             });
             publicAgent.on('message', (message) => {
                 const data = JSON.parse(message);
