@@ -16,7 +16,7 @@ class Market {
     constructor(private config: Config) { }
 
     getTrades(from: unknown = Symbol('unique')): Trade[] {
-        return takeRightWhile(this.trades, trade => trade.id !== from);
+        return takeRightWhile([...this.trades], trade => trade.id !== from);
     }
 
     updateTrades(newTrades: Trade[]): void {

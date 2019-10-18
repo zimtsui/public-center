@@ -15,7 +15,7 @@ class Market {
         this.orderbook = { asks: [], bids: [] };
     }
     getTrades(from = Symbol('unique')) {
-        return lodash_1.takeRightWhile(this.trades, trade => trade.id !== from);
+        return lodash_1.takeRightWhile([...this.trades], trade => trade.id !== from);
     }
     updateTrades(newTrades) {
         this.trades.pushWithTime(...newTrades.map(trade => ({

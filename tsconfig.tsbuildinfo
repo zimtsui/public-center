@@ -214,7 +214,7 @@
         "signature": "423ca886f968509c777f95e123ae8963342adcfc87fae3553bb53beab3b61dfa"
       },
       "./src/market.ts": {
-        "version": "ecc0ecbfd3fbcab5863f68229ee20fde221a72b2162e81647a573104d556577c",
+        "version": "1816c0e8b9aa387182f9cc2a8033e58dd65722315c878bddef855f432d275c3b",
         "signature": "54f49479b4416be0fa4f8d92f27f5164a4e8de85c676a037a1253e3b0decef20"
       },
       "./node_modules/@types/node/globals.d.ts": {
@@ -2178,7 +2178,6 @@
       "./node_modules/ttl-queue/dist/index.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
       "./src/interfaces.ts",
-      "./src/market.ts",
       "./node_modules/@types/node/globals.d.ts",
       "./node_modules/@types/node/assert.d.ts",
       "./node_modules/@types/node/async_hooks.d.ts",
@@ -2242,13 +2241,14 @@
       "./node_modules/@types/ws/index.d.ts",
       "./node_modules/koa-ws-filter/dist/index.d.ts",
       "./node_modules/@types/koa__cors/index.d.ts",
+      "./src/index.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/chai/index.d.ts",
       "./node_modules/@types/chai-as-promised/index.d.ts",
       "./node_modules/@types/chance/index.d.ts",
       "./node_modules/@types/minimatch/index.d.ts",
       "./node_modules/@types/glob/index.d.ts",
-      "./src/index.ts"
+      "./src/market.ts"
     ]
   },
   "version": "3.6.4"
