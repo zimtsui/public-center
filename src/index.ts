@@ -9,6 +9,7 @@ import _ from 'lodash';
 import Filter from 'koa-ws-filter';
 import EventEmitter from 'events';
 import cors from '@koa/cors';
+import WebSocket from 'ws';
 import {
     PublicDataFromAgentToCenter as PDFATC,
     Config,
@@ -22,6 +23,8 @@ type PDFATCWithMeta = PDFATC & Meta;
 
 const config: Config = readJsonSync(path.join(__dirname,
     '../cfg/config.json'));
+
+const ACTIVE_CLOSE = 'public-center';
 
 class PublicCenter extends Autonomous {
     private httpServer = http.createServer();
@@ -65,7 +68,7 @@ class PublicCenter extends Autonomous {
 
     private configureUpload(): void {
         this.wsRouter.all('/:exchange/:instrument/:currency', async (ctx, next) => {
-            const publicAgent = await ctx.upgrade();
+            const publicAgent = <WebSocket>await ctx.upgrade();
             const marketName = <string>ctx.state.marketName;
             this.onlineMarkets.add(marketName);
 
@@ -73,11 +76,12 @@ class PublicCenter extends Autonomous {
             this.realTime.emit(marketName, data);
             console.log(`${marketName} online`);
 
-            publicAgent.on('close', () => {
+            publicAgent.on('close', (code, reason) => {
                 this.onlineMarkets.delete(marketName);
                 const data: PDFATCWithMeta = { online: false };
                 this.realTime.emit(marketName, data);
-                console.log(`${marketName} offline`);
+                if (reason !== ACTIVE_CLOSE)
+                    console.log(`${marketName} offline: ${code}`);
             });
 
             publicAgent.on('message', (message: string) => {
@@ -190,7 +194,7 @@ class PublicCenter extends Autonomous {
     }
 
     protected async _stop(): Promise<void> {
-        await this.filter.close();
+        await this.filter.close(1000, ACTIVE_CLOSE);
         await new Promise<void>((resolve, reject) =>
             void this.httpServer.close(err => {
                 if (err) reject(err); else resolve();

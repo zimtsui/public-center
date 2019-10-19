@@ -462,15 +462,15 @@
         "signature": "edf9f7a505ebd55d49ef0a6ab571b131480f558498c4141b736bdbd80ce98311"
       },
       "./node_modules/koa-ws-filter/dist/index.d.ts": {
-        "version": "7ccd6f2f53dccb25479c02e2d781a3d0c59a03ea8ba29ab696b31e112ff22253",
-        "signature": "7ccd6f2f53dccb25479c02e2d781a3d0c59a03ea8ba29ab696b31e112ff22253"
+        "version": "536b58652b59ae3d6cf2c8ba7d181a49e66f8078b27ebceb73ae0150d2fe0c8b",
+        "signature": "536b58652b59ae3d6cf2c8ba7d181a49e66f8078b27ebceb73ae0150d2fe0c8b"
       },
       "./node_modules/@types/koa__cors/index.d.ts": {
         "version": "b79cda8e2122af980fcb0bd09d0ecacdf6be4f38088d6d23818547c9ee31a38d",
         "signature": "b79cda8e2122af980fcb0bd09d0ecacdf6be4f38088d6d23818547c9ee31a38d"
       },
       "./src/index.ts": {
-        "version": "440968d5c7b533f10b8331086c910c414c39d274c21d8ed824aa6ceedd410d0d",
+        "version": "8e0260d34c957e31ef3ef85f3fdcd231792a1fb2cc7a7736980c290a68e86de9",
         "signature": "16fc9561776d36e3dcf45f204e7ef563f2009943dd1856b67676bb91da8e1e58"
       },
       "./node_modules/@types/bluebird/index.d.ts": {
@@ -1297,6 +1297,7 @@
         "./node_modules/koa-ws-filter/dist/index.d.ts",
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/@types/koa__cors/index.d.ts",
+        "./node_modules/@types/ws/index.d.ts",
         "./src/interfaces.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
@@ -2178,6 +2179,7 @@
       "./node_modules/ttl-queue/dist/index.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
       "./src/interfaces.ts",
+      "./src/market.ts",
       "./node_modules/@types/node/globals.d.ts",
       "./node_modules/@types/node/assert.d.ts",
       "./node_modules/@types/node/async_hooks.d.ts",
@@ -2241,14 +2243,13 @@
       "./node_modules/@types/ws/index.d.ts",
       "./node_modules/koa-ws-filter/dist/index.d.ts",
       "./node_modules/@types/koa__cors/index.d.ts",
-      "./src/index.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/chai/index.d.ts",
       "./node_modules/@types/chai-as-promised/index.d.ts",
       "./node_modules/@types/chance/index.d.ts",
       "./node_modules/@types/minimatch/index.d.ts",
       "./node_modules/@types/glob/index.d.ts",
-      "./src/market.ts"
+      "./src/index.ts"
     ]
   },
   "version": "3.6.4"

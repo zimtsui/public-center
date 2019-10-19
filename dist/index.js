@@ -15,6 +15,7 @@ const koa_ws_filter_1 = __importDefault(require("koa-ws-filter"));
 const events_1 = __importDefault(require("events"));
 const cors_1 = __importDefault(require("@koa/cors"));
 const config = fs_extra_1.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
+const ACTIVE_CLOSE = 'public-center';
 class PublicCenter extends autonomous_1.default {
     constructor() {
         super();
@@ -53,11 +54,12 @@ class PublicCenter extends autonomous_1.default {
             const data = { online: true };
             this.realTime.emit(marketName, data);
             console.log(`${marketName} online`);
-            publicAgent.on('close', () => {
+            publicAgent.on('close', (code, reason) => {
                 this.onlineMarkets.delete(marketName);
                 const data = { online: false };
                 this.realTime.emit(marketName, data);
-                console.log(`${marketName} offline`);
+                if (reason !== ACTIVE_CLOSE)
+                    console.log(`${marketName} offline: ${code}`);
             });
             publicAgent.on('message', (message) => {
                 const data = JSON.parse(message);
@@ -154,7 +156,7 @@ class PublicCenter extends autonomous_1.default {
         return new Promise(resolve => void this.httpServer.listen(config.PORT, resolve));
     }
     async _stop() {
-        await this.filter.close();
+        await this.filter.close(1000, ACTIVE_CLOSE);
         await new Promise((resolve, reject) => void this.httpServer.close(err => {
             if (err)
                 reject(err);
