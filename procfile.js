@@ -13,16 +13,15 @@ module.exports = (pandora) => {
         });
 
     pandora
-        .service(
-            'kita',
-            PandoraKita,
-        ).process('weak-all');
+        .service('kita', PandoraKita)
+        .process('weak-all');
 
     pandora
         .service(
             'public-center',
             autoExitDecorator(3000)(PublicCenter)
-        ).process('process1');
+        ).dependency('kita')
+        .process('process1');
 
     /**
      * you can also use cluster mode to start application
