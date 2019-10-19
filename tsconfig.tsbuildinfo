@@ -470,7 +470,7 @@
         "signature": "b79cda8e2122af980fcb0bd09d0ecacdf6be4f38088d6d23818547c9ee31a38d"
       },
       "./src/index.ts": {
-        "version": "8e0260d34c957e31ef3ef85f3fdcd231792a1fb2cc7a7736980c290a68e86de9",
+        "version": "cec9e74c6064f84de9d5c88e9cc3f7371f48edc0afe73a02e91971e12af20b4a",
         "signature": "16fc9561776d36e3dcf45f204e7ef563f2009943dd1856b67676bb91da8e1e58"
       },
       "./node_modules/@types/bluebird/index.d.ts": {

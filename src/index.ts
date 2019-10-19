@@ -126,7 +126,7 @@ class PublicCenter extends Autonomous {
 
     private configureWsDownload(): void {
         this.wsRouter.all('/:exchange/:instrument/:currency/trades', async (ctx, next) => {
-            const downloader = await ctx.upgrade();
+            const downloader = <WebSocket>await ctx.upgrade();
             const { marketName } = ctx.state;
 
             function onData(data: PDFATC): void {
@@ -143,7 +143,7 @@ class PublicCenter extends Autonomous {
         });
 
         this.wsRouter.all('/:exchange/:instrument/:currency/orderbook', async (ctx, next) => {
-            const downloader = await ctx.upgrade();
+            const downloader = <WebSocket>await ctx.upgrade();
             const { marketName } = ctx.state;
 
             function onData(data: PDFATC): void {
@@ -160,7 +160,7 @@ class PublicCenter extends Autonomous {
         });
 
         this.wsRouter.all('/:exchange/:instrument/:currency/online', async (ctx, next) => {
-            const downloader = await ctx.upgrade();
+            const downloader = <WebSocket>await ctx.upgrade();
             const { marketName } = ctx.state;
 
             const message = JSON.stringify(
