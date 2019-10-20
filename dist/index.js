@@ -156,13 +156,15 @@ class PublicCenter extends autonomous_1.Autonomous {
         return new Promise(resolve => void this.httpServer.listen(config.PORT, resolve));
     }
     async _stop() {
-        await this.filter.close(1000, ACTIVE_CLOSE);
-        await new Promise((resolve, reject) => void this.httpServer.close(err => {
-            if (err)
-                reject(err);
-            else
-                resolve();
-        }));
+        await Promise.all([
+            this.filter.close(1000, ACTIVE_CLOSE),
+            new Promise((resolve, reject) => void this.httpServer.close(err => {
+                if (err)
+                    reject(err);
+                else
+                    resolve();
+            })),
+        ]);
     }
 }
 exports.PublicCenter = PublicCenter;

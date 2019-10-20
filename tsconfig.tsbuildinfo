@@ -482,7 +482,7 @@
         "signature": "b79cda8e2122af980fcb0bd09d0ecacdf6be4f38088d6d23818547c9ee31a38d"
       },
       "./src/index.ts": {
-        "version": "3b6801c0a34388e3842a549289cd5c8c54085874d9db920761d73220f9235958",
+        "version": "b36bffb87531f1a4d0cbc6881913ff7f2c1ef9b757b421443b695b9857bd00eb",
         "signature": "8eb058c10f8f69bde53aff7922d1a975012b90b61db5b93035976e9aae0308e0"
       },
       "./node_modules/pandora-kita/dist/index.d.ts": {
@@ -490,7 +490,7 @@
         "signature": "9e217cd4eb4395b143968f279777544f7581886f476625cbde9ccaddc7f14e86"
       },
       "./src/main.ts": {
-        "version": "5b808e7d0f2b890db42e7068fed82e20cc8a164273c4facf897ae08f765dff91",
+        "version": "03dce4f12c2e249be0b61c1943c136671d5a1c4dd0c201950108daf5d1de41e0",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
       "./node_modules/@types/bluebird/index.d.ts": {
@@ -2439,6 +2439,12 @@
       "./src/index.ts": [
         "./node_modules/autonomous/dist/index.d.ts"
       ],
+      "./node_modules/pandora-kita/dist/index.d.ts": [
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/ts3.2/fs.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "./node_modules/@types/bluebird/index.d.ts": [
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
@@ -2464,12 +2470,6 @@
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/@types/minimatch/index.d.ts",
         "./node_modules/@types/node/ts3.2/index.d.ts",
-        "./node_modules/@types/node/util.d.ts",
-        "./node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "./node_modules/pandora-kita/dist/index.d.ts": [
-        "./node_modules/@types/node/fs.d.ts",
-        "./node_modules/@types/node/ts3.2/fs.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ]
@@ -2508,8 +2508,10 @@
       "./node_modules/typescript/lib/lib.es2019.symbol.d.ts",
       "./node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "./node_modules/typescript/lib/lib.esnext.bigint.d.ts",
+      "./node_modules/autonomous/dist/auto-exit-decorator.d.ts",
       "./node_modules/autonomous/dist/autonomous.d.ts",
       "./node_modules/autonomous/dist/pandora2pm2.d.ts",
+      "./node_modules/autonomous/dist/index.d.ts",
       "./node_modules/@types/lodash/ts3.1/common/common.d.ts",
       "./node_modules/@types/lodash/ts3.1/common/array.d.ts",
       "./node_modules/@types/lodash/ts3.1/common/collection.d.ts",
@@ -2593,17 +2595,15 @@
       "./node_modules/@types/ws/index.d.ts",
       "./node_modules/koa-ws-filter/dist/index.d.ts",
       "./node_modules/@types/koa__cors/index.d.ts",
+      "./src/index.ts",
+      "./node_modules/pandora-kita/dist/index.d.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/chai/index.d.ts",
       "./node_modules/@types/chai-as-promised/index.d.ts",
       "./node_modules/@types/chance/index.d.ts",
       "./node_modules/@types/minimatch/index.d.ts",
       "./node_modules/@types/glob/index.d.ts",
-      "./node_modules/autonomous/dist/auto-exit-decorator.d.ts",
-      "./node_modules/autonomous/dist/index.d.ts",
-      "./node_modules/pandora-kita/dist/index.d.ts",
-      "./src/main.ts",
-      "./src/index.ts"
+      "./src/main.ts"
     ]
   },
   "version": "3.6.4"

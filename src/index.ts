@@ -194,11 +194,13 @@ class PublicCenter extends Autonomous {
     }
 
     protected async _stop(): Promise<void> {
-        await this.filter.close(1000, ACTIVE_CLOSE);
-        await new Promise<void>((resolve, reject) =>
-            void this.httpServer.close(err => {
-                if (err) reject(err); else resolve();
-            }));
+        await Promise.all([
+            this.filter.close(1000, ACTIVE_CLOSE),
+            new Promise<void>((resolve, reject) =>
+                void this.httpServer.close(err => {
+                    if (err) reject(err); else resolve();
+                })),
+        ]);
     }
 }
 
