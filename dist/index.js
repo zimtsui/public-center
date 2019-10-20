@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const autonomous_1 = __importDefault(require("autonomous"));
+const autonomous_1 = require("autonomous");
 const http_1 = __importDefault(require("http"));
 const market_1 = __importDefault(require("./market"));
 const koa_1 = __importDefault(require("koa"));
@@ -16,7 +16,7 @@ const events_1 = __importDefault(require("events"));
 const cors_1 = __importDefault(require("@koa/cors"));
 const config = fs_extra_1.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
 const ACTIVE_CLOSE = 'public-center';
-class PublicCenter extends autonomous_1.default {
+class PublicCenter extends autonomous_1.Autonomous {
     constructor() {
         super();
         this.httpServer = http_1.default.createServer();

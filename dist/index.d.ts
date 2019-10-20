@@ -1,4 +1,4 @@
-import Autonomous from 'autonomous';
+import { Autonomous } from 'autonomous';
 declare class PublicCenter extends Autonomous {
     private httpServer;
     private filter;

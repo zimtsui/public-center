@@ -1,4 +1,4 @@
-import Autonomous from 'autonomous';
+import { Autonomous } from 'autonomous';
 import http from 'http';
 import Market from './market';
 import Koa from 'koa';
