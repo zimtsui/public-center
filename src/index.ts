@@ -13,6 +13,7 @@ import WebSocket from 'ws';
 import {
     PublicDataFromAgentToCenter as PDFATC,
     Config,
+    Orderbook,
 } from './interfaces';
 
 interface Meta {
@@ -148,7 +149,11 @@ class PublicCenter extends Autonomous {
 
             function onData(data: PDFATC): void {
                 if (!data.orderbook) return;
-                const message = JSON.stringify(data.orderbook);
+                const orderbook: Orderbook = {
+                    bids: data.orderbook.bids.slice(0, ctx.query.depth),
+                    asks: data.orderbook.asks.slice(0, ctx.query.depth),
+                }
+                const message = JSON.stringify(orderbook);
                 downloader.send(message);
             }
             this.realTime.on(marketName, onData);

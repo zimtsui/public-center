@@ -121,7 +121,11 @@ class PublicCenter extends autonomous_1.Autonomous {
             function onData(data) {
                 if (!data.orderbook)
                     return;
-                const message = JSON.stringify(data.orderbook);
+                const orderbook = {
+                    bids: data.orderbook.bids.slice(0, ctx.query.depth),
+                    asks: data.orderbook.asks.slice(0, ctx.query.depth),
+                };
+                const message = JSON.stringify(orderbook);
                 downloader.send(message);
             }
             this.realTime.on(marketName, onData);
