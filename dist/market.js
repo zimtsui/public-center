@@ -12,7 +12,10 @@ class Market {
     constructor(config) {
         this.config = config;
         this.trades = new ttl_queue_1.default(this.config.TTL);
-        this.orderbook = { asks: [], bids: [] };
+        this.orderbook = {
+            asks: [], bids: [],
+            time: Number.NEGATIVE_INFINITY,
+        };
     }
     getTrades(from = Symbol('unique')) {
         return lodash_1.takeRightWhile([...this.trades], trade => trade.id !== from);
@@ -27,6 +30,7 @@ class Market {
         return {
             bids: lodash_1.take(this.orderbook.bids, depth),
             asks: lodash_1.take(this.orderbook.asks, depth),
+            time: this.orderbook.time,
         };
     }
     updateOrderbook(newOrderbook) {

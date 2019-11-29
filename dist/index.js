@@ -51,13 +51,11 @@ class PublicCenter extends autonomous_1.Autonomous {
             const publicAgent = await ctx.upgrade();
             const marketName = ctx.state.marketName;
             this.onlineMarkets.add(marketName);
-            const data = { online: true };
-            this.realTime.emit(marketName, data);
+            this.realTime.emit(`${marketName}/online`, true);
             console.log(`${marketName} online`);
             publicAgent.on('close', (code, reason) => {
                 this.onlineMarkets.delete(marketName);
-                const data = { online: false };
-                this.realTime.emit(marketName, data);
+                this.realTime.emit(`${marketName}/online`, false);
                 if (reason !== ACTIVE_CLOSE)
                     console.log(`${marketName} offline: ${code}`);
             });
@@ -67,12 +65,16 @@ class PublicCenter extends autonomous_1.Autonomous {
                     this.markets.set(marketName, new market_1.default(config));
                 }
                 const market = this.markets.get(marketName);
-                if (data.trades)
+                if (data.trades) {
                     market.updateTrades(data.trades);
-                if (data.orderbook)
+                    this.realTime.emit(`${marketName}/trades`, data.trades);
+                }
+                if (data.orderbook) {
                     market.updateOrderbook(data.orderbook);
-                this.realTime.emit(marketName, data);
+                    this.realTime.emit(`${market}/orderbook`, data.orderbook);
+                }
             });
+            await next();
         });
     }
     configureHttpDownload() {
@@ -91,7 +93,11 @@ class PublicCenter extends autonomous_1.Autonomous {
             const { marketName } = ctx.state;
             if (this.onlineMarkets.has(marketName)) {
                 const market = this.markets.get(marketName);
-                ctx.body = market.getOrderbook(ctx.query.depth);
+                const orderbook = market.getOrderbook(ctx.query.depth);
+                if (Number.isFinite(orderbook.time))
+                    ctx.body = orderbook;
+                else
+                    ctx.status = 404;
             }
             else {
                 ctx.status = 404;
@@ -103,53 +109,51 @@ class PublicCenter extends autonomous_1.Autonomous {
         this.wsRouter.all('/:exchange/:instrument/:currency/trades', async (ctx, next) => {
             const downloader = await ctx.upgrade();
             const { marketName } = ctx.state;
-            function onData(data) {
-                if (!data.trades)
-                    return;
-                const message = JSON.stringify(data.trades);
+            function onData(trades) {
+                const message = JSON.stringify(trades);
                 downloader.send(message);
             }
-            this.realTime.on(marketName, onData);
+            this.realTime.on(`${marketName}/trades`, onData);
             downloader.on('error', console.error);
             downloader.on('close', () => {
-                this.realTime.off(marketName, onData);
+                this.realTime.off(`${marketName}/trades`, onData);
             });
+            await next();
         });
         this.wsRouter.all('/:exchange/:instrument/:currency/orderbook', async (ctx, next) => {
             const downloader = await ctx.upgrade();
             const { marketName } = ctx.state;
-            function onData(data) {
-                if (!data.orderbook)
-                    return;
-                const orderbook = {
-                    bids: data.orderbook.bids.slice(0, ctx.query.depth),
-                    asks: data.orderbook.asks.slice(0, ctx.query.depth),
+            function onData(orderbook) {
+                const orderbookDepthLtd = {
+                    bids: orderbook.bids.slice(0, ctx.query.depth),
+                    asks: orderbook.asks.slice(0, ctx.query.depth),
+                    time: orderbook.time,
                 };
-                const message = JSON.stringify(orderbook);
+                const message = JSON.stringify(orderbookDepthLtd);
                 downloader.send(message);
             }
-            this.realTime.on(marketName, onData);
+            this.realTime.on(`${marketName}/orderbook`, onData);
             downloader.on('error', console.error);
             downloader.on('close', () => {
-                this.realTime.off(marketName, onData);
+                this.realTime.off(`${marketName}/orderbook`, onData);
             });
+            await next();
         });
         this.wsRouter.all('/:exchange/:instrument/:currency/online', async (ctx, next) => {
             const downloader = await ctx.upgrade();
             const { marketName } = ctx.state;
             const message = JSON.stringify(this.onlineMarkets.has(marketName));
             downloader.send(message);
-            function onData(data) {
-                if (typeof data.online !== 'boolean')
-                    return;
-                const message = JSON.stringify(data.online);
+            function onData(online) {
+                const message = JSON.stringify(online);
                 downloader.send(message);
             }
-            this.realTime.on(marketName, onData);
+            this.realTime.on(`${marketName}/online`, onData);
             downloader.on('error', console.error);
             downloader.on('close', () => {
-                this.realTime.off(marketName, onData);
+                this.realTime.off(`${marketName}/online`, onData);
             });
+            await next();
         });
     }
     configureHttpServer() {

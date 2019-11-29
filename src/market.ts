@@ -11,7 +11,10 @@ import { Config, Trade, Orderbook } from './interfaces';
 
 class Market {
     private trades = new TtlQueue<Trade>(this.config.TTL);
-    private orderbook: Orderbook = { asks: [], bids: [] };
+    private orderbook: Orderbook = {
+        asks: [], bids: [],
+        time: Number.NEGATIVE_INFINITY,
+    };
 
     constructor(private config: Config) { }
 
@@ -32,6 +35,7 @@ class Market {
         return {
             bids: take(this.orderbook.bids, depth),
             asks: take(this.orderbook.asks, depth),
+            time: this.orderbook.time,
         };
     }
 

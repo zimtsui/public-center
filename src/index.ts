@@ -11,16 +11,11 @@ import EventEmitter from 'events';
 import cors from '@koa/cors';
 import WebSocket from 'ws';
 import {
-    PublicDataFromAgentToCenter as PDFATC,
+    DataFromPublicAgentToCenter as DFPATC,
+    Trade,
     Config,
     Orderbook,
 } from './interfaces';
-
-interface Meta {
-    online?: boolean;
-}
-
-type PDFATCWithMeta = PDFATC & Meta;
 
 const config: Config = readJsonSync(path.join(__dirname,
     '../cfg/config.json'));
@@ -73,29 +68,34 @@ class PublicCenter extends Autonomous {
             const marketName = <string>ctx.state.marketName;
             this.onlineMarkets.add(marketName);
 
-            const data: PDFATCWithMeta = { online: true };
-            this.realTime.emit(marketName, data);
+            this.realTime.emit(`${marketName}/online`, true);
             console.log(`${marketName} online`);
 
             publicAgent.on('close', (code, reason) => {
                 this.onlineMarkets.delete(marketName);
-                const data: PDFATCWithMeta = { online: false };
-                this.realTime.emit(marketName, data);
+                this.realTime.emit(`${marketName}/online`, false);
                 if (reason !== ACTIVE_CLOSE)
                     console.log(`${marketName} offline: ${code}`);
             });
 
             publicAgent.on('message', (message: string) => {
-                const data: PDFATCWithMeta = <PDFATC>JSON.parse(message);
+                const data = <DFPATC>JSON.parse(message);
                 if (!this.markets.has(marketName)) {
                     this.markets.set(marketName, new Market(config));
                 }
-                const market = this.markets.get(marketName);
+                const market = this.markets.get(marketName)!;
 
-                if (data.trades) market!.updateTrades(data.trades);
-                if (data.orderbook) market!.updateOrderbook(data.orderbook);
-                this.realTime.emit(marketName, data);
+                if (data.trades) {
+                    market.updateTrades(data.trades);
+                    this.realTime.emit(`${marketName}/trades`, data.trades);
+                }
+                if (data.orderbook) {
+                    market.updateOrderbook(data.orderbook);
+                    this.realTime.emit(`${market}/orderbook`, data.orderbook);
+                }
             });
+
+            await next();
         });
     }
 
@@ -117,7 +117,11 @@ class PublicCenter extends Autonomous {
 
             if (this.onlineMarkets.has(marketName)) {
                 const market = this.markets.get(marketName)!;
-                ctx.body = market.getOrderbook(ctx.query.depth);
+                const orderbook = market.getOrderbook(ctx.query.depth);
+                if (Number.isFinite(orderbook.time))
+                    ctx.body = orderbook;
+                else
+                    ctx.status = 404;
             } else {
                 ctx.status = 404;
             }
@@ -130,38 +134,41 @@ class PublicCenter extends Autonomous {
             const downloader = <WebSocket>await ctx.upgrade();
             const { marketName } = ctx.state;
 
-            function onData(data: PDFATC): void {
-                if (!data.trades) return;
-                const message = JSON.stringify(data.trades);
+            function onData(trades: Trade[]): void {
+                const message = JSON.stringify(trades);
                 downloader.send(message);
             }
-            this.realTime.on(marketName, onData);
+            this.realTime.on(`${marketName}/trades`, onData);
             downloader.on('error', console.error);
 
             downloader.on('close', () => {
-                this.realTime.off(marketName, onData);
+                this.realTime.off(`${marketName}/trades`, onData);
             });
+
+            await next();
         });
 
         this.wsRouter.all('/:exchange/:instrument/:currency/orderbook', async (ctx, next) => {
             const downloader = <WebSocket>await ctx.upgrade();
             const { marketName } = ctx.state;
 
-            function onData(data: PDFATC): void {
-                if (!data.orderbook) return;
-                const orderbook: Orderbook = {
-                    bids: data.orderbook.bids.slice(0, ctx.query.depth),
-                    asks: data.orderbook.asks.slice(0, ctx.query.depth),
+            function onData(orderbook: Orderbook): void {
+                const orderbookDepthLtd: Orderbook = {
+                    bids: orderbook.bids.slice(0, ctx.query.depth),
+                    asks: orderbook.asks.slice(0, ctx.query.depth),
+                    time: orderbook.time,
                 }
-                const message = JSON.stringify(orderbook);
+                const message = JSON.stringify(orderbookDepthLtd);
                 downloader.send(message);
             }
-            this.realTime.on(marketName, onData);
+            this.realTime.on(`${marketName}/orderbook`, onData);
             downloader.on('error', console.error);
 
             downloader.on('close', () => {
-                this.realTime.off(marketName, onData);
+                this.realTime.off(`${marketName}/orderbook`, onData);
             });
+
+            await next();
         });
 
         this.wsRouter.all('/:exchange/:instrument/:currency/online', async (ctx, next) => {
@@ -173,17 +180,18 @@ class PublicCenter extends Autonomous {
             );
             downloader.send(message);
 
-            function onData(data: PDFATCWithMeta): void {
-                if (typeof data.online !== 'boolean') return;
-                const message = JSON.stringify(data.online);
+            function onData(online: boolean): void {
+                const message = JSON.stringify(online);
                 downloader.send(message);
             }
-            this.realTime.on(marketName, onData);
+            this.realTime.on(`${marketName}/online`, onData);
             downloader.on('error', console.error);
 
             downloader.on('close', () => {
-                this.realTime.off(marketName, onData);
+                this.realTime.off(`${marketName}/online`, onData);
             });
+
+            await next();
         });
     }
 
