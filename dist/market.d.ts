@@ -9,4 +9,4 @@ declare class Market {
     getOrderbook(depth?: number): Orderbook;
     updateOrderbook(newOrderbook: Orderbook): void;
 }
-export default Market;
+export { Market as default, Market, };

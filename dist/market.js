@@ -1,35 +1,30 @@
-"use strict";
 /*
     交易所给的 trade id 不一定是有序的，甚至都不一定是数字。
 */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const lodash_1 = require("lodash");
-const ttl_queue_1 = __importDefault(require("ttl-queue"));
+import _ from 'lodash';
+import TtlQueue from 'ttl-queue';
 class Market {
     constructor(config) {
         this.config = config;
-        this.trades = new ttl_queue_1.default(this.config.TTL);
         this.orderbook = {
             asks: [], bids: [],
             time: Number.NEGATIVE_INFINITY,
         };
+        this.trades = new TtlQueue({
+            ttl: this.config.TTL,
+            cleaningInterval: this.config.CLEANING_INTERVAL,
+        });
     }
     getTrades(from = Symbol('unique')) {
-        return lodash_1.takeRightWhile([...this.trades], trade => trade.id !== from);
+        return _.takeRightWhile([...this.trades], trade => trade.id !== from);
     }
     updateTrades(newTrades) {
-        this.trades.pushWithTime(...newTrades.map(trade => ({
-            element: trade,
-            time: trade.time,
-        })));
+        newTrades.forEach(trade => this.trades.push(trade, trade.time));
     }
     getOrderbook(depth = Number.POSITIVE_INFINITY) {
         return {
-            bids: lodash_1.take(this.orderbook.bids, depth),
-            asks: lodash_1.take(this.orderbook.asks, depth),
+            bids: _.take(this.orderbook.bids, depth),
+            asks: _.take(this.orderbook.asks, depth),
             time: this.orderbook.time,
         };
     }
@@ -37,5 +32,5 @@ class Market {
         this.orderbook = newOrderbook;
     }
 }
-exports.default = Market;
+export { Market as default, Market, };
 //# sourceMappingURL=market.js.map

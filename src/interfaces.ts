@@ -1,11 +1,8 @@
 export * from 'interfaces';
 
-interface Config {
+export interface Config {
     PORT: number;
-    INTERVAL_OF_CLEANING: number;
+    CLEANING_INTERVAL: number;
     TTL: number;
+    HTTP_KEEP_ALIVE: number;
 }
-
-export {
-    Config,
-};

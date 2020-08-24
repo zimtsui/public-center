@@ -1,5 +1,5 @@
-import { Autonomous } from 'autonomous';
-declare class PublicCenter extends Autonomous {
+import Startable from 'startable';
+declare class PublicCenter extends Startable {
     private httpServer;
     private filter;
     private wsRouter;
@@ -7,7 +7,7 @@ declare class PublicCenter extends Autonomous {
     private koa;
     private markets;
     private onlineMarkets;
-    private realTime;
+    private broadcast;
     constructor();
     private addMarketName;
     private configureUpload;
@@ -17,5 +17,4 @@ declare class PublicCenter extends Autonomous {
     protected _start(): Promise<void>;
     protected _stop(): Promise<void>;
 }
-export default PublicCenter;
-export { PublicCenter };
+export { PublicCenter as default, PublicCenter, };
