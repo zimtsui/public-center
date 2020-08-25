@@ -666,8 +666,13 @@
         "signature": "b8544f969dc57414049ca29071f358fffdb3ac390b6fc676b9b8eb060ecd73fe",
         "affectsGlobalScope": false
       },
+      "./node_modules/server-destroy/index.d.ts": {
+        "version": "3f3cdbe508502dd1d9bbb0fb8745a09be2c73d04887d9ae2032459900f562eb2",
+        "signature": "3f3cdbe508502dd1d9bbb0fb8745a09be2c73d04887d9ae2032459900f562eb2",
+        "affectsGlobalScope": false
+      },
       "./src/public-center.ts": {
-        "version": "6ba000ca154ae7f95689b4334a86a8db612730c92fe402c8bb99ccce1cfffa39",
+        "version": "8d52c872f67915f91014a8fd7b4212b23ad7427286e8786c21bd9e7f857a36d0",
         "signature": "b919c46053c85900a7dc763dcbc2ea4dca536526d730f0d87367588475a22598",
         "affectsGlobalScope": false
       },
@@ -1575,6 +1580,13 @@
         "./node_modules/queue/dist/interfaces.d.ts",
         "./node_modules/queue/dist/linear.d.ts"
       ],
+      "./node_modules/server-destroy/index.d.ts": [
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/ts3.2/fs.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/util.d.ts"
+      ],
       "./node_modules/startable/dist/index.d.ts": [
         "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/ts3.2/fs.d.ts",
@@ -1635,6 +1647,7 @@
         "./node_modules/@types/ws/index.d.ts",
         "./node_modules/koa-ws-filter/dist/index.d.ts",
         "./node_modules/pandora2pm2/node_modules/startable/dist/index.d.ts",
+        "./node_modules/server-destroy/index.d.ts",
         "./src/interfaces.ts",
         "./src/market.ts",
         "./src/read-config.ts"
@@ -2746,6 +2759,13 @@
         "./node_modules/queue/dist/interfaces.d.ts",
         "./node_modules/queue/dist/linear.d.ts"
       ],
+      "./node_modules/server-destroy/index.d.ts": [
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/ts3.2/fs.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/util.d.ts"
+      ],
       "./node_modules/startable/dist/index.d.ts": [
         "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/ts3.2/fs.d.ts",
@@ -3114,6 +3134,7 @@
       "./node_modules/queue/dist/linear.d.ts",
       "./node_modules/queue/dist/random-access-linear-iterable.d.ts",
       "./node_modules/queue/dist/random-access-linear.d.ts",
+      "./node_modules/server-destroy/index.d.ts",
       "./node_modules/startable/dist/index.d.ts",
       "./node_modules/ttl-queue/dist/index.d.ts",
       "./node_modules/ttl-queue/dist/ttl-queue.d.ts",

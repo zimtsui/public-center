@@ -48,6 +48,7 @@
         "koa-ws-filter": "git+https://gitee.com/zimtsui/koa-ws-filter.git",
         "lodash": "^4.17.15",
         "pandora2pm2": "https://gitee.com/zimtsui/pandora2pm2.git",
+        "server-destroy": "git+https://github.com/zimtsui/server-destroy.git",
         "startable": "git+https://gitee.com/zimtsui/startable.git",
         "ttl-queue": "git+https://gitee.com/zimtsui/ttl-queue.git",
         "ws": "^7.1.2"

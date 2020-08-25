@@ -8,12 +8,13 @@ import Filter from 'koa-ws-filter';
 import EventEmitter from 'events';
 import cors from '@koa/cors';
 import readConfig from './read-config';
+import enabledDestroy from 'server-destroy';
 const config = readConfig();
 const ACTIVE_CLOSE = 'public-center';
 class PublicCenter extends Startable {
     constructor() {
         super();
-        this.httpServer = http.createServer();
+        this.httpServer = enabledDestroy(http.createServer());
         this.filter = new Filter();
         this.wsRouter = new Router();
         this.httpRouter = new Router();
@@ -151,16 +152,11 @@ class PublicCenter extends Startable {
     }
     // it has to wait for keep-alive connections and transfering connections to close
     async _stop() {
-        await Promise.all([
-            this.filter.close(1000, ACTIVE_CLOSE),
-            new Promise(resolve => {
-                this.httpServer.close((err) => {
-                    if (err)
-                        console.error(err);
-                    resolve();
-                });
-            }),
-        ]);
+        return new Promise(resolve => void this.httpServer.destroy((err) => {
+            if (err)
+                console.error(err);
+            resolve();
+        }));
     }
 }
 export { PublicCenter as default, PublicCenter, };

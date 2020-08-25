@@ -9,6 +9,7 @@ import EventEmitter from 'events';
 import cors from '@koa/cors';
 import WebSocket from 'ws';
 import readConfig from './read-config';
+import enabledDestroy from 'server-destroy';
 import {
     DataFromPublicAgentToCenter as DFPATC,
     Trade,
@@ -22,7 +23,7 @@ const config: Config = readConfig();
 const ACTIVE_CLOSE = 'public-center';
 
 class PublicCenter extends Startable {
-    private httpServer = http.createServer();
+    private httpServer = enabledDestroy(http.createServer());
     private filter = new Filter();
     private wsRouter = new Router();
     private httpRouter = new Router();
@@ -189,15 +190,11 @@ class PublicCenter extends Startable {
 
     // it has to wait for keep-alive connections and transfering connections to close
     protected async _stop(): Promise<void> {
-        await Promise.all([
-            this.filter.close(1000, ACTIVE_CLOSE),
-            new Promise<void>(resolve => {
-                this.httpServer.close((err?: Error) => {
-                    if (err) console.error(err);
-                    resolve();
-                });
-            }),
-        ]);
+        return new Promise(resolve =>
+            void this.httpServer.destroy((err?: Error) => {
+                if (err) console.error(err);
+                resolve();
+            }));
     }
 }
 
