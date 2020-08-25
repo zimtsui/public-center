@@ -42,14 +42,14 @@
         "@types/node": "^12.11.1",
         "@types/ws": "^6.0.3",
         "fs-extra": "^8.1.0",
-        "interfaces": "git+https://github.com/zimtsui/interfaces.git",
+        "interfaces": "git+https://gitee.com/zimtsui/interfaces.git",
         "koa": "^2.8.2",
         "koa-router": "^7.4.0",
-        "koa-ws-filter": "git+https://github.com/zimtsui/koa-ws-filter.git",
+        "koa-ws-filter": "git+https://gitee.com/zimtsui/koa-ws-filter.git",
         "lodash": "^4.17.15",
-        "pandora-kita": "git+https://github.com/zimtsui/pandora-kita.git",
-        "startable": "git+https://github.com/zimtsui/startable.git",
-        "ttl-queue": "git+https://github.com/zimtsui/ttl-queue.git",
+        "pandora2pm2": "https://gitee.com/zimtsui/pandora2pm2.git",
+        "startable": "git+https://gitee.com/zimtsui/startable.git",
+        "ttl-queue": "git+https://gitee.com/zimtsui/ttl-queue.git",
         "ws": "^7.1.2"
     }
 }
