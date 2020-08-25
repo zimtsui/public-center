@@ -332,8 +332,8 @@
         "affectsGlobalScope": false
       },
       "./src/interfaces.ts": {
-        "version": "05dd75005266600cec658ecdb5c830652d9227bc3d8fb9d416dc898efd03403d",
-        "signature": "adfe53972817ef451c2d5d8744b0342901d8f5531c16ae8b9fe42cbed462eda7",
+        "version": "c37be4d86ef8b4902a8d6fa6c8d7c3fb7a1af9f29b9086621d529e71b885ebd6",
+        "signature": "80b21d27980475ba0c228b2e8f7d4a598c427e86c9a09f94903c4faa1b309e9b",
         "affectsGlobalScope": false
       },
       "./src/market.ts": {
@@ -667,7 +667,7 @@
         "affectsGlobalScope": false
       },
       "./src/public-center.ts": {
-        "version": "aaaffc8083c97366b2ef1e622eee7b75c9c6c00b77a6c3eda81a139584293802",
+        "version": "6ba000ca154ae7f95689b4334a86a8db612730c92fe402c8bb99ccce1cfffa39",
         "signature": "b919c46053c85900a7dc763dcbc2ea4dca536526d730f0d87367588475a22598",
         "affectsGlobalScope": false
       },

@@ -140,8 +140,8 @@ class PublicCenter extends Startable {
         });
     }
     configureHttpServer() {
-        this.httpServer.timeout = 0;
-        this.httpServer.keepAliveTimeout = config.HTTP_KEEP_ALIVE;
+        this.httpServer.timeout = config.HTTP_TIMEOUT;
+        this.httpServer.keepAliveTimeout = config.HTTP_KEEP_ALIVE_TIMEOUT;
     }
     _start() {
         return new Promise(resolve => {
@@ -149,7 +149,7 @@ class PublicCenter extends Startable {
             this.httpServer.on('error', this.stop.bind(this));
         });
     }
-    // it has to wait for http-keep-alive socket to close
+    // it has to wait for keep-alive connections and transfering connections to close
     async _stop() {
         await Promise.all([
             this.filter.close(1000, ACTIVE_CLOSE),
