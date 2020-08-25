@@ -2751,7 +2751,7 @@
         "./node_modules/@types/node/ts3.2/fs.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts",
-        "./node_modules/startable/dist/startable.d.ts"
+        "./node_modules/pandora2pm2/node_modules/startable/dist/startable.d.ts"
       ],
       "./node_modules/ttl-queue/dist/index.d.ts": [
         "./node_modules/@types/node/fs.d.ts",
@@ -2765,8 +2765,8 @@
         "./node_modules/@types/node/ts3.2/fs.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts",
-        "./node_modules/queue/dist/index.d.ts",
-        "./node_modules/startable/dist/index.d.ts"
+        "./node_modules/pandora2pm2/node_modules/startable/dist/index.d.ts",
+        "./node_modules/queue/dist/index.d.ts"
       ],
       "./src/interfaces.ts": [
         "./node_modules/interfaces/dist/index.d.ts"
@@ -2775,7 +2775,7 @@
         "./src/interfaces.ts"
       ],
       "./src/public-center.ts": [
-        "./node_modules/startable/dist/index.d.ts"
+        "./node_modules/pandora2pm2/node_modules/startable/dist/index.d.ts"
       ],
       "./src/read-config.ts": [
         "./src/interfaces.ts"
