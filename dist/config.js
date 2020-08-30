@@ -1,4 +1,4 @@
-export const config = {
+export default {
     PORT: 12001,
     TTL: 120000,
     CLEANING_INTERVAL: 10000,
@@ -8,7 +8,6 @@ export const config = {
     */
     HTTP_KEEP_ALIVE_TIMEOUT: 0,
     HTTP_TIMEOUT: 3000,
-    WS_CLOSE_TIMEOUT: 1000,
+    WS_CLOSE_TIMEOUT: 3000,
 };
-export default config;
 //# sourceMappingURL=config.js.map

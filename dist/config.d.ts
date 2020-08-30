@@ -1,10 +1,9 @@
-export interface Config {
+declare const _default: {
     PORT: number;
-    CLEANING_INTERVAL: number;
     TTL: number;
+    CLEANING_INTERVAL: number;
     HTTP_KEEP_ALIVE_TIMEOUT: number;
     HTTP_TIMEOUT: number;
     WS_CLOSE_TIMEOUT: number;
-}
-export declare const config: Config;
-export default config;
+};
+export default _default;

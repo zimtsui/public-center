@@ -202,8 +202,8 @@
         "affectsGlobalScope": true
       },
       "./src/config.ts": {
-        "version": "255c963e03996185a1abe8de1ea24cfeced1e4d69ecd9026530215f3aad69472",
-        "signature": "356d3fcca4f8bef1ce7fceba335f320c76241e782808d0a5ec482b0421b33d70",
+        "version": "3308ae687f92b7425333c68b39d82cd546415438a0b83079a7f4cc44e2010dc8",
+        "signature": "794051a283cf7aa748b6ff266c5d4367708cb632ede1d9686a785f48104812d1",
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/index.d.ts": {
