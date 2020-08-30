@@ -9,7 +9,7 @@
         "test": "tsc -b ./test/ && ava",
         "build": "tsc -b",
         "debug": "epi-cli run -c ./epi.config.json",
-        "start": "epi-cli start --c ./epi.config.json"
+        "start": "epi-cli start -c ./epi.config.json"
     },
     "repository": {
         "type": "git",
