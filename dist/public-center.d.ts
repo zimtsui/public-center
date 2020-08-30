@@ -9,11 +9,11 @@ declare class PublicCenter extends Startable {
     private onlineMarkets;
     private broadcast;
     constructor();
-    private addMarketName;
-    private configureUpload;
+    private configureHttpServer;
+    private addMarketNameToContext;
+    private configureWsUpload;
     private configureHttpDownload;
     private configureWsDownload;
-    private configureHttpServer;
     protected _start(): Promise<void>;
     protected _stop(): Promise<void>;
 }

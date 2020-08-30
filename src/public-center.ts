@@ -8,7 +8,7 @@ import Filter from 'koa-ws-filter';
 import EventEmitter from 'events';
 import cors from '@koa/cors';
 import WebSocket from 'ws';
-import enabledDestroy from 'server-destroy';
+// import enabledDestroy from 'server-destroy';
 import {
     DataFromPublicAgentToCenter as DFPATC,
     Trade,
@@ -19,7 +19,8 @@ import config from './config';
 const ACTIVE_CLOSE = 'public-center';
 
 class PublicCenter extends Startable {
-    private httpServer = enabledDestroy(http.createServer());
+    // private httpServer = enabledDestroy(http.createServer());
+    private httpServer = http.createServer();
     private filter = new Filter();
     private wsRouter = new Router();
     private httpRouter = new Router();
@@ -31,10 +32,10 @@ class PublicCenter extends Startable {
     constructor() {
         super();
         this.configureHttpServer();
-        this.addMarketName();
+        this.addMarketNameToContext();
 
         this.configureHttpDownload();
-        this.configureUpload();
+        this.configureWsUpload();
         this.configureWsDownload();
 
         this.filter.http(cors());
@@ -45,25 +46,26 @@ class PublicCenter extends Startable {
         this.httpServer.on('request', this.koa.callback());
     }
 
-    private addMarketName(): void {
+    private configureHttpServer(): void {
+        this.httpServer.timeout = config.HTTP_TIMEOUT;
+        this.httpServer.keepAliveTimeout = config.HTTP_KEEP_ALIVE_TIMEOUT;
+    }
+
+    private addMarketNameToContext(): void {
         const f = async (
             ctx: Router.RouterContext, next: () => Promise<unknown>,
         ) => {
-            const marketName = _.toLower(
+            ctx.state.marketName = _.toLower(
                 `${ctx.params.exchange
                 }/${ctx.params.instrument
                 }/${ctx.params.currency}`);
-
-            if (this.onlineMarkets.has(marketName)) {
-                ctx.state.marketName = marketName;
-                await next();
-            } else ctx.status = 404;
+            await next();
         }
-        this.httpRouter.all('/:exchange/:instrument/:currency/:suffix+', f);
-        this.wsRouter.all('/:exchange/:instrument/:currency/:suffix+', f);
+        this.httpRouter.all('/:exchange/:instrument/:currency/:suffix*', f);
+        this.wsRouter.all('/:exchange/:instrument/:currency/:suffix*', f);
     }
 
-    private configureUpload(): void {
+    private configureWsUpload(): void {
         this.wsRouter.all('/:exchange/:instrument/:currency', async (ctx, next) => {
             const publicAgent = <WebSocket>await ctx.state.upgrade();
             const marketName = <string>ctx.state.marketName;
@@ -101,12 +103,22 @@ class PublicCenter extends Startable {
     private configureHttpDownload(): void {
         this.httpRouter.get('/:exchange/:instrument/:currency/trades', async (ctx, next) => {
             const marketName = <string>ctx.state.marketName;
+            if (!this.onlineMarkets.has(marketName)) {
+                ctx.status = 404;
+                return;
+            }
+
             const market = this.markets.get(marketName)!;
             ctx.body = market.getTrades(ctx.query.from);
         });
 
         this.httpRouter.get('/:exchange/:instrument/:currency/orderbook', async (ctx, next) => {
             const marketName = <string>ctx.state.marketName;
+            if (!this.onlineMarkets.has(marketName)) {
+                ctx.status = 404;
+                return;
+            }
+
             const market = this.markets.get(marketName)!;
             const orderbook = market.getOrderbook(ctx.query.depth);
             if (Number.isFinite(orderbook.time)) ctx.body = orderbook;
@@ -116,8 +128,12 @@ class PublicCenter extends Startable {
 
     private configureWsDownload(): void {
         this.wsRouter.all('/:exchange/:instrument/:currency/trades', async (ctx, next) => {
-            const downloader = <WebSocket>await ctx.state.upgrade();
             const { marketName } = ctx.state;
+            if (!this.onlineMarkets.has(marketName)) {
+                ctx.status = 404;
+                return;
+            }
+            const downloader = <WebSocket>await ctx.state.upgrade();
 
             function onData(trades: Trade[]): void {
                 const message = JSON.stringify(trades);
@@ -132,8 +148,12 @@ class PublicCenter extends Startable {
         });
 
         this.wsRouter.all('/:exchange/:instrument/:currency/orderbook', async (ctx, next) => {
-            const downloader = <WebSocket>await ctx.state.upgrade();
             const { marketName } = ctx.state;
+            if (!this.onlineMarkets.has(marketName)) {
+                ctx.status = 404;
+                return;
+            }
+            const downloader = <WebSocket>await ctx.state.upgrade();
 
             function onData(orderbook: Orderbook): void {
                 const orderbookDepthLtd: Orderbook = {
@@ -153,8 +173,12 @@ class PublicCenter extends Startable {
         });
 
         this.wsRouter.all('/:exchange/:instrument/:currency/online', async (ctx, next) => {
-            const downloader = <WebSocket>await ctx.state.upgrade();
             const { marketName } = ctx.state;
+            if (!this.onlineMarkets.has(marketName)) {
+                ctx.status = 404;
+                return;
+            }
+            const downloader = <WebSocket>await ctx.state.upgrade();
 
             const message = JSON.stringify(this.onlineMarkets.has(marketName));
             downloader.send(message);
@@ -172,11 +196,6 @@ class PublicCenter extends Startable {
         });
     }
 
-    private configureHttpServer(): void {
-        this.httpServer.timeout = config.HTTP_TIMEOUT;
-        this.httpServer.keepAliveTimeout = config.HTTP_KEEP_ALIVE_TIMEOUT;
-    }
-
     protected _start() {
         return new Promise<void>(resolve => {
             this.httpServer.listen(config.PORT, resolve);
@@ -184,7 +203,6 @@ class PublicCenter extends Startable {
         });
     }
 
-    // it has to wait for keep-alive connections and transfering connections to close
     // protected async _stop(): Promise<void> {
     //     return new Promise(resolve =>
     //         void this.httpServer.destroy((err?: Error) => {
@@ -192,6 +210,8 @@ class PublicCenter extends Startable {
     //             resolve();
     //         }));
     // }
+
+    // it has to wait for keep-alive connections and transfering connections to close
     protected async _stop(): Promise<void> {
         await Promise.all([
             this.filter.close(config.WS_CLOSE_TIMEOUT, ACTIVE_CLOSE),

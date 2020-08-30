@@ -1,40 +1,24 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const ava_1 = __importDefault(require("ava"));
-const chai_1 = __importDefault(require("chai"));
-const chai_as_promised_1 = __importDefault(require("chai-as-promised"));
-chai_1.default.use(chai_as_promised_1.default);
-const { assert } = chai_1.default;
-const chance_1 = __importDefault(require("chance"));
-const chance = new chance_1.default();
-const axios_1 = __importDefault(require("axios"));
-const fs_extra_1 = __importDefault(require("fs-extra"));
-const path_1 = __importDefault(require("path"));
-const bluebird_1 = __importDefault(require("bluebird"));
-const lodash_1 = __importDefault(require("lodash"));
-const ws_1 = __importDefault(require("ws"));
-const interfaces_1 = require("../../dist/interfaces");
-const __1 = __importDefault(require("../.."));
-const events_1 = require("events");
-const config = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../../cfg/config.json'));
-const tradeNum = 2;
-const OrderNum = 2;
+import test from 'ava';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+chai.use(chaiAsPromised);
+const { assert } = chai;
+import Chance from 'chance';
+const chance = new Chance();
+import axios from 'axios';
+import { promisify } from 'util';
+import _ from 'lodash';
+import WebSocket from 'ws';
+import PublicCenter from '../../dist/public-center';
+import { once } from 'events';
+import config from '../../dist/config';
+const sleep = promisify(setTimeout);
+const tradeNum = 3;
+const OrderNum = 8;
 const likelihood = 90;
 function randomOrder() {
     return {
-        action: chance.pickone([interfaces_1.Action.BID, interfaces_1.Action.ASK]),
+        action: chance.pickone(["bid" /* BID */, "ask" /* ASK */]),
         price: chance.integer({
             min: 1000,
             max: 100000,
@@ -47,113 +31,131 @@ function randomOrder() {
 }
 function randomTrade() {
     const now = Date.now();
-    return Object.assign(Object.assign({}, randomOrder()), { time: now, id: now });
-}
-function randomOrderbook() {
-    const orders = lodash_1.default.range(0, OrderNum).map(() => randomOrder());
     return {
-        bids: orders.filter(order => order.action === interfaces_1.Action.BID),
-        asks: orders.filter(order => order.action === interfaces_1.Action.ASK),
+        ...randomOrder(),
+        time: now,
+        id: now,
     };
 }
-function randomTrades() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const trades = [];
-        for (const i of lodash_1.default.range(0, tradeNum)) {
-            trades.push(randomTrade());
-            yield bluebird_1.default.delay(1);
-        }
-        return trades;
-    });
+function randomOrderbook() {
+    const orders = _
+        .range(0, OrderNum)
+        .map(() => randomOrder())
+        .sort((o1, o2) => o1.price - o2.price);
+    return {
+        bids: orders
+            .slice(0, orders.length / 2)
+            .reverse()
+            .map(order => {
+            order.action = "bid" /* BID */;
+            return order;
+        }),
+        asks: orders
+            .slice(orders.length / 2)
+            .map(order => {
+            order.action = "ask" /* ASK */;
+            return order;
+        }),
+        time: Date.now(),
+    };
 }
-function randomMessage() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const message = {};
-        if (chance.bool({ likelihood }))
-            message.orderbook = randomOrderbook();
-        if (chance.bool({ likelihood }))
-            message.trades = yield randomTrades();
-        return message;
-    });
+async function randomTrades() {
+    const trades = [];
+    for (const i of _.range(0, tradeNum)) {
+        trades.push(randomTrade());
+        await sleep(1);
+    }
+    return trades;
 }
-ava_1.default.serial('start and stop', (t) => __awaiter(void 0, void 0, void 0, function* () {
-    const quoteCenter = new __1.default();
+async function randomMessage() {
+    const message = {};
+    if (chance.bool({ likelihood }))
+        message.trades = await randomTrades();
+    if (chance.bool({ likelihood }))
+        message.orderbook = randomOrderbook();
+    return message;
+}
+test.serial('start and stop', async (t) => {
+    const publicCenter = new PublicCenter();
     t.log('starting');
-    yield quoteCenter.start();
+    await publicCenter.start();
     t.log('started');
     t.log('stopping');
-    yield quoteCenter.stop();
-}));
-ava_1.default.serial.skip('random', (t) => __awaiter(void 0, void 0, void 0, function* () {
+    await publicCenter.stop();
+});
+test.serial('random', async (t) => {
     t.log(randomOrder());
     t.log(randomTrade());
     t.log(randomOrderbook());
-    t.log(yield randomTrades());
-}));
-ava_1.default.serial('connection', (t) => __awaiter(void 0, void 0, void 0, function* () {
-    global.t = t;
-    const quoteCenter = new __1.default();
+    t.log(await randomTrades());
+});
+test.serial('connection', async (t) => {
+    console.log = t.log;
+    const publicCenter = new PublicCenter();
     t.log(1);
-    yield quoteCenter.start();
-    const uploader = new ws_1.default(`ws://localhost:${config.PORT}/bitmex/btc/usdt`);
+    await publicCenter.start();
+    const uploader = new WebSocket(`ws://localhost:${config.PORT}/bitmex/btc/usdt`);
     t.log(2);
-    yield events_1.once(uploader, 'open');
+    await once(uploader, 'open');
     t.log(3);
-    yield bluebird_1.default.delay(500);
+    await sleep(500);
     uploader.close();
     t.log(4);
-    yield events_1.once(uploader, 'close');
-    yield quoteCenter.stop();
+    await once(uploader, 'close');
+    await publicCenter.stop();
     t.log(5);
-    yield bluebird_1.default.delay(500);
-}));
-ava_1.default.serial('upload', (t) => __awaiter(void 0, void 0, void 0, function* () {
-    global.t = t;
-    const quoteCenter = new __1.default();
-    yield quoteCenter.start();
-    const uploader = new ws_1.default(`ws://localhost:${config.PORT}/bitmex/btc/usdt`);
-    yield events_1.once(uploader, 'open');
-    yield bluebird_1.default.delay(500);
-    uploader.send(JSON.stringify(yield randomMessage()));
-    yield bluebird_1.default.delay(1000);
+    await sleep(500);
+});
+test.serial('upload', async (t) => {
+    console.log = t.log;
+    const publicCenter = new PublicCenter();
+    await publicCenter.start();
+    const uploader = new WebSocket(`ws://localhost:${config.PORT}/bitmex/btc/usdt`);
+    await once(uploader, 'open');
+    await sleep(500);
+    uploader.send(JSON.stringify(await randomMessage()));
+    await sleep(1000);
     uploader.close();
-    yield events_1.once(uploader, 'close');
-    yield quoteCenter.stop();
-}));
-ava_1.default.serial('download', (t) => __awaiter(void 0, void 0, void 0, function* () {
-    global.t = t;
-    const quoteCenter = new __1.default();
-    yield quoteCenter.start();
-    const uploader = new ws_1.default(`ws://localhost:${config.PORT}/bitmex/btc/usdt`);
-    yield events_1.once(uploader, 'open');
-    uploader.send(JSON.stringify(yield randomMessage()));
-    yield bluebird_1.default.delay(1000);
-    uploader.close();
-    yield events_1.once(uploader, 'close');
-    const orderbook = yield axios_1.default.get(`http://localhost:${config.PORT}/bitmex/btc/usdt/orderbook`);
+    await once(uploader, 'close');
+    await publicCenter.stop();
+});
+test.serial('upload and download', async (t) => {
+    console.log = t.log;
+    assert(config.TTL > 2000);
+    const publicCenter = new PublicCenter();
+    await publicCenter.start();
+    const uploader = new WebSocket(`ws://localhost:${config.PORT}/bitmex/btc/usdt`);
+    await once(uploader, 'open');
+    uploader.send(JSON.stringify(await randomMessage()));
+    await sleep(1000);
+    const orderbook = await axios.get(`http://localhost:${config.PORT}/bitmex/btc/usdt/orderbook`);
     t.log(orderbook.data);
-    const trades = yield axios_1.default.get(`http://localhost:${config.PORT}/bitmex/btc/usdt/trades`);
+    const trades = await axios.get(`http://localhost:${config.PORT}/bitmex/btc/usdt/trades`);
     t.log(trades.data);
-    yield quoteCenter.stop();
-}));
-ava_1.default.serial('cleaner', (t) => __awaiter(void 0, void 0, void 0, function* () {
-    global.t = t;
-    const quoteCenter = new __1.default();
-    yield quoteCenter.start();
-    const uploader = new ws_1.default(`ws://localhost:${config.PORT}/bitmex/btc/usdt`);
-    yield events_1.once(uploader, 'open');
-    uploader.send(JSON.stringify(yield randomMessage()));
-    yield bluebird_1.default.delay(5000);
-    uploader.send(JSON.stringify(yield randomMessage()));
     uploader.close();
-    yield events_1.once(uploader, 'close');
-    yield axios_1.default.get(`http://localhost:${config.PORT}/bitmex/btc/usdt/trades`)
+    await once(uploader, 'close');
+    await publicCenter.stop();
+});
+test.serial('ttl queue', async (t) => {
+    console.log = t.log;
+    assert(config.TTL === 5000);
+    assert(config.CLEANING_INTERVAL === 0);
+    const publicCenter = new PublicCenter();
+    await publicCenter.start();
+    const uploader = new WebSocket(`ws://localhost:${config.PORT}/bitmex/btc/usdt`);
+    await once(uploader, 'open');
+    uploader.send(JSON.stringify(await randomMessage()));
+    await sleep(4000);
+    uploader.send(JSON.stringify(await randomMessage()));
+    await axios.get(`http://localhost:${config.PORT}/bitmex/btc/usdt/trades`)
         .then(res => res.data)
         .then(data => t.log(data));
-    yield bluebird_1.default.delay(6000);
-    yield axios_1.default.get(`http://localhost:${config.PORT}/bitmex/btc/usdt/trades`)
+    await sleep(2000);
+    await axios.get(`http://localhost:${config.PORT}/bitmex/btc/usdt/trades`)
         .then(res => res.data)
         .then(data => t.log(data));
-    yield quoteCenter.stop();
-}));
+    uploader.close();
+    await once(uploader, 'close');
+    await publicCenter.stop();
+});
 //# sourceMappingURL=test.js.map
