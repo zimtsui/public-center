@@ -1,9 +1,8 @@
-import { Config, Trade, Orderbook } from './interfaces';
+import { Trade, Orderbook } from './interfaces';
 declare class Market {
-    private config;
     private trades;
     private orderbook;
-    constructor(config: Config);
+    constructor();
     getTrades(from?: unknown): Trade[];
     updateTrades(newTrades: Trade[]): void;
     getOrderbook(depth?: number): Orderbook;

@@ -1,0 +1,8 @@
+{
+    "name": "public-center",
+    "path": "./dist/public-center.js",
+    "node-args": [
+        "--experimental-specifier-resolution=node",
+        "--enable-source-maps"
+    ]
+}

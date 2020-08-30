@@ -4,7 +4,8 @@
 
 import _ from 'lodash';
 import TtlQueue from 'ttl-queue';
-import { Config, Trade, Orderbook } from './interfaces';
+import { Trade, Orderbook } from './interfaces';
+import config from './config';
 
 class Market {
     private trades: TtlQueue<Trade>;
@@ -13,10 +14,10 @@ class Market {
         time: Number.NEGATIVE_INFINITY,
     };
 
-    constructor(private config: Config) {
+    constructor() {
         this.trades = new TtlQueue<Trade>({
-            ttl: this.config.TTL,
-            cleaningInterval: this.config.CLEANING_INTERVAL,
+            ttl: config.TTL,
+            cleaningInterval: config.CLEANING_INTERVAL,
         });
     }
 

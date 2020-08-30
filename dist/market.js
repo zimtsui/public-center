@@ -3,16 +3,16 @@
 */
 import _ from 'lodash';
 import TtlQueue from 'ttl-queue';
+import config from './config';
 class Market {
-    constructor(config) {
-        this.config = config;
+    constructor() {
         this.orderbook = {
             asks: [], bids: [],
             time: Number.NEGATIVE_INFINITY,
         };
         this.trades = new TtlQueue({
-            ttl: this.config.TTL,
-            cleaningInterval: this.config.CLEANING_INTERVAL,
+            ttl: config.TTL,
+            cleaningInterval: config.CLEANING_INTERVAL,
         });
     }
     getTrades(from = Symbol('unique')) {

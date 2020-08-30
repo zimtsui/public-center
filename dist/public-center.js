@@ -7,9 +7,8 @@ import _ from 'lodash';
 import Filter from 'koa-ws-filter';
 import EventEmitter from 'events';
 import cors from '@koa/cors';
-import readConfig from './read-config';
 import enabledDestroy from 'server-destroy';
-const config = readConfig();
+import config from './config';
 const ACTIVE_CLOSE = 'public-center';
 class PublicCenter extends Startable {
     constructor() {
@@ -49,7 +48,7 @@ class PublicCenter extends Startable {
     }
     configureUpload() {
         this.wsRouter.all('/:exchange/:instrument/:currency', async (ctx, next) => {
-            const publicAgent = await ctx.upgrade();
+            const publicAgent = await ctx.state.upgrade();
             const marketName = ctx.state.marketName;
             this.onlineMarkets.add(marketName);
             this.broadcast.emit(`${marketName}/online`, true);
@@ -63,7 +62,7 @@ class PublicCenter extends Startable {
             publicAgent.on('message', (message) => {
                 const data = JSON.parse(message);
                 if (!this.markets.has(marketName))
-                    this.markets.set(marketName, new Market(config));
+                    this.markets.set(marketName, new Market());
                 const market = this.markets.get(marketName);
                 if (data.trades) {
                     market.updateTrades(data.trades);
@@ -94,7 +93,7 @@ class PublicCenter extends Startable {
     }
     configureWsDownload() {
         this.wsRouter.all('/:exchange/:instrument/:currency/trades', async (ctx, next) => {
-            const downloader = await ctx.upgrade();
+            const downloader = await ctx.state.upgrade();
             const { marketName } = ctx.state;
             function onData(trades) {
                 const message = JSON.stringify(trades);
@@ -107,7 +106,7 @@ class PublicCenter extends Startable {
             });
         });
         this.wsRouter.all('/:exchange/:instrument/:currency/orderbook', async (ctx, next) => {
-            const downloader = await ctx.upgrade();
+            const downloader = await ctx.state.upgrade();
             const { marketName } = ctx.state;
             function onData(orderbook) {
                 const orderbookDepthLtd = {
@@ -125,7 +124,7 @@ class PublicCenter extends Startable {
             });
         });
         this.wsRouter.all('/:exchange/:instrument/:currency/online', async (ctx, next) => {
-            const downloader = await ctx.upgrade();
+            const downloader = await ctx.state.upgrade();
             const { marketName } = ctx.state;
             const message = JSON.stringify(this.onlineMarkets.has(marketName));
             downloader.send(message);
@@ -151,12 +150,24 @@ class PublicCenter extends Startable {
         });
     }
     // it has to wait for keep-alive connections and transfering connections to close
+    // protected async _stop(): Promise<void> {
+    //     return new Promise(resolve =>
+    //         void this.httpServer.destroy((err?: Error) => {
+    //             if (err) console.error(err);
+    //             resolve();
+    //         }));
+    // }
     async _stop() {
-        return new Promise(resolve => void this.httpServer.destroy((err) => {
-            if (err)
-                console.error(err);
-            resolve();
-        }));
+        await Promise.all([
+            this.filter.close(config.WS_CLOSE_TIMEOUT, ACTIVE_CLOSE),
+            new Promise(resolve => {
+                this.httpServer.close((err) => {
+                    if (err)
+                        console.error(err);
+                    resolve();
+                });
+            }),
+        ]);
     }
 }
 export { PublicCenter as default, PublicCenter, };

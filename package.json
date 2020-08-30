@@ -8,8 +8,8 @@
     "scripts": {
         "test": "tsc -b ./test/ && ava",
         "build": "tsc -b",
-        "dev": "env NODE_ENV=development node -r source-map-support/register ./dist/main",
-        "start": "pm2 start ./ecosystem.config.js"
+        "debug": "epi-cli run -c ./epi.config.json",
+        "start": "epi-cli start --c ./epi.config.json"
     },
     "repository": {
         "type": "git",
@@ -29,8 +29,7 @@
         "axios": "^0.19.0",
         "chai": "^4.2.0",
         "chai-as-promised": "^7.1.1",
-        "chance": "^1.1.3",
-        "source-map-support": "^0.5.13"
+        "chance": "^1.1.3"
     },
     "dependencies": {
         "@koa/cors": "^3.0.0",
@@ -47,7 +46,6 @@
         "koa-router": "^7.4.0",
         "koa-ws-filter": "git+https://gitee.com/zimtsui/koa-ws-filter.git",
         "lodash": "^4.17.15",
-        "pandora2pm2": "https://gitee.com/zimtsui/pandora2pm2.git",
         "server-destroy": "git+https://github.com/zimtsui/server-destroy.git",
         "startable": "git+https://gitee.com/zimtsui/startable.git",
         "ttl-queue": "git+https://gitee.com/zimtsui/ttl-queue.git",

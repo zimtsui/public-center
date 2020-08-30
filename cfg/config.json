@@ -1,7 +1,0 @@
-{
-    "PORT": 12001,
-    "CLEANING_INTERVAL": 10000,
-    "TTL": 120000,
-    "HTTP_KEEP_ALIVE_TIMEOUT": 0,
-    "HTTP_TIMEOIUT": 0
-}
