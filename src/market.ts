@@ -21,15 +21,15 @@ class Market {
         });
     }
 
-    getTrades(from: unknown = Symbol('unique')): Trade[] {
+    public getTrades(from: unknown = Symbol('unique')): Trade[] {
         return _.takeRightWhile([...this.trades], trade => trade.id !== from);
     }
 
-    updateTrades(newTrades: Trade[]): void {
+    public updateTrades(newTrades: Trade[]): void {
         newTrades.forEach(trade => this.trades.push(trade, trade.time));
     }
 
-    getOrderbook(depth = Number.POSITIVE_INFINITY): Orderbook {
+    public getOrderbook(depth = Number.POSITIVE_INFINITY): Orderbook {
         return {
             bids: _.take(this.orderbook.bids, depth),
             asks: _.take(this.orderbook.asks, depth),
@@ -37,7 +37,7 @@ class Market {
         };
     }
 
-    updateOrderbook(newOrderbook: Orderbook): void {
+    public updateOrderbook(newOrderbook: Orderbook): void {
         this.orderbook = newOrderbook;
     }
 }

@@ -332,7 +332,7 @@
         "affectsGlobalScope": false
       },
       "./src/market.ts": {
-        "version": "4bc91f2fac28f5f0860af8d8b618f332067b58efe3a6eb08ea026d53e3eea16e",
+        "version": "8643c3c46436467aa044e1ad91b1f81f0c32e2d1e9bc47fd2a8e724ffe430d0a",
         "signature": "807be1bb7263356b2951e282b77eef2a3dbc656d2c83f82d5abeb94772c76346",
         "affectsGlobalScope": false
       },
