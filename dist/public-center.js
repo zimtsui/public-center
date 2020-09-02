@@ -47,31 +47,53 @@ class PublicCenter extends Startable {
     }
     configureWsUpload() {
         this.wsRouter.all('/:exchange/:instrument/:currency', async (ctx, next) => {
-            const publicAgent = await ctx.state.upgrade();
-            const marketName = ctx.state.marketName;
-            this.onlineMarkets.add(marketName);
-            this.broadcast.emit(`${marketName}/online`, true);
-            console.log(`${marketName} online`);
-            publicAgent.on('close', (code, reason) => {
-                this.onlineMarkets.delete(marketName);
-                this.broadcast.emit(`${marketName}/online`, false);
-                if (reason !== ACTIVE_CLOSE)
-                    console.log(`${marketName} offline: ${code}`);
-            });
-            publicAgent.on('message', (message) => {
-                const data = JSON.parse(message);
-                if (!this.markets.has(marketName))
-                    this.markets.set(marketName, new Market());
-                const market = this.markets.get(marketName);
-                if (data.trades) {
-                    market.updateTrades(data.trades);
-                    this.broadcast.emit(`${marketName}/trades`, data.trades);
+            try {
+                const marketName = ctx.state.marketName;
+                if (this.onlineMarkets.has(marketName)) {
+                    ctx.status = 409;
+                    ctx.message = 'Already online.';
+                    return;
                 }
-                if (data.orderbook) {
-                    market.updateOrderbook(data.orderbook);
-                    this.broadcast.emit(`${market}/orderbook`, data.orderbook);
-                }
-            });
+                const publicAgent = await ctx.state.upgrade();
+                this.onlineMarkets.add(marketName);
+                this.broadcast.emit(`${marketName}/online`, true);
+                console.log(`${marketName} online`);
+                const market = new Market();
+                await market.start();
+                this.markets.set(marketName, market);
+                publicAgent.on('close', async (code, reason) => {
+                    try {
+                        await market.stop();
+                        this.broadcast.emit(`${marketName}/online`, false);
+                        if (reason !== ACTIVE_CLOSE)
+                            console.log(`${marketName} offline`);
+                        this.onlineMarkets.delete(marketName);
+                    }
+                    catch (err) {
+                        this.stop(err);
+                    }
+                });
+                publicAgent.on('message', (message) => {
+                    try {
+                        const data = JSON.parse(message);
+                        const market = this.markets.get(marketName);
+                        if (data.trades) {
+                            market.updateTrades(data.trades);
+                            this.broadcast.emit(`${marketName}/trades`, data.trades);
+                        }
+                        if (data.orderbook) {
+                            market.updateOrderbook(data.orderbook);
+                            this.broadcast.emit(`${market}/orderbook`, data.orderbook);
+                        }
+                    }
+                    catch (err) {
+                        this.stop(err);
+                    }
+                });
+            }
+            catch (err) {
+                this.stop(err);
+            }
         });
     }
     configureHttpDownload() {

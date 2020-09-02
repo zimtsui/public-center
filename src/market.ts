@@ -6,8 +6,9 @@ import _ from 'lodash';
 import TtlQueue from 'ttl-queue';
 import { Trade, Orderbook } from './interfaces';
 import config from './config';
+import Startable from 'startable';
 
-class Market {
+class Market extends Startable {
     private trades: TtlQueue<Trade>;
     private orderbook: Orderbook = {
         asks: [], bids: [],
@@ -15,10 +16,19 @@ class Market {
     };
 
     constructor() {
+        super();
         this.trades = new TtlQueue<Trade>({
             ttl: config.TTL,
             cleaningInterval: config.CLEANING_INTERVAL,
         });
+    }
+
+    protected async _start() {
+        await this.trades.start(err => this.stop(err));
+    }
+
+    protected async _stop() {
+        await this.trades.stop();
     }
 
     public getTrades(from: unknown = Symbol('unique')): Trade[] {

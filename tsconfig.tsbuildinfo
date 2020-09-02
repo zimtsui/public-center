@@ -332,8 +332,8 @@
         "affectsGlobalScope": false
       },
       "./src/market.ts": {
-        "version": "8643c3c46436467aa044e1ad91b1f81f0c32e2d1e9bc47fd2a8e724ffe430d0a",
-        "signature": "807be1bb7263356b2951e282b77eef2a3dbc656d2c83f82d5abeb94772c76346",
+        "version": "2326d5fad1564c033c27dbdbf64170dfcd56f2e7281ccf10939cd017113c22bf",
+        "signature": "8a3c778c22732d5d0364b140b85fc776921c0e24394f807cd2147c9e1d25b039",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/globals.d.ts": {
@@ -682,7 +682,7 @@
         "affectsGlobalScope": false
       },
       "./src/public-center.ts": {
-        "version": "e7ded5b33d9fb1f5f02d66635e56076ca9b92997ea17477dca4f550d3930b6f1",
+        "version": "71e374a34d2963a8d477a5e2e9765347a87e230bc77db80a6bb04faa69af4e55",
         "signature": "79bfbae437d69e1bf1e3b56db79287f538f3c26d1384b46526997f3ae856fe8e",
         "affectsGlobalScope": false
       },
@@ -1672,6 +1672,7 @@
         "./node_modules/@types/node/ts3.2/fs.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts",
+        "./node_modules/startable/dist/index.d.ts",
         "./node_modules/ttl-queue/dist/index.d.ts",
         "./src/config.ts",
         "./src/interfaces.ts"
@@ -2853,6 +2854,7 @@
         "./node_modules/interfaces/dist/index.d.ts"
       ],
       "./src/market.ts": [
+        "./node_modules/startable/dist/index.d.ts",
         "./src/interfaces.ts"
       ],
       "./src/public-center.ts": [
