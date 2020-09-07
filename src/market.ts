@@ -9,7 +9,7 @@ import config from './config';
 import Startable from 'startable';
 
 class Market extends Startable {
-    private trades: TtlQueue<Trade>;
+    private trades: TtlQueue<Trade, NodeJS.Timeout>;
     private orderbook: Orderbook = {
         asks: [], bids: [],
         time: Number.NEGATIVE_INFINITY,
@@ -17,10 +17,10 @@ class Market extends Startable {
 
     constructor() {
         super();
-        this.trades = new TtlQueue<Trade>({
+        this.trades = new TtlQueue<Trade, NodeJS.Timeout>({
             ttl: config.TTL,
             cleaningInterval: config.CLEANING_INTERVAL,
-        });
+        }, setTimeout, clearTimeout);
     }
 
     protected async _start() {

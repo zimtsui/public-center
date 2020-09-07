@@ -15,7 +15,7 @@ class Market extends Startable {
         this.trades = new TtlQueue({
             ttl: config.TTL,
             cleaningInterval: config.CLEANING_INTERVAL,
-        });
+        }, setTimeout, clearTimeout);
     }
     async _start() {
         await this.trades.start(err => this.stop(err));
